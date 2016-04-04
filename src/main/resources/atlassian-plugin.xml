@@ -8,17 +8,55 @@
     </plugin-info>
 
     <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="bamboo-artifactory-plugin"/>
-    
-    <!-- add our web resources -->
-    <web-resource key="bamboo-artifactory-plugin-resources" name="bamboo-artifactory-plugin Web Resources">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        
-        <resource type="download" name="bamboo-artifactory-plugin.css" location="/css/bamboo-artifactory-plugin.css"/>
-        <resource type="download" name="bamboo-artifactory-plugin.js" location="/js/bamboo-artifactory-plugin.js"/>
-        <resource type="download" name="images/" location="/images"/>
+    <resource type="i18n" name="i18n" location="i18n"/>
 
-        <context>bamboo-artifactory-plugin</context>
-    </web-resource>
-    
+    <!--<component name="Artifactory Server Configuration Management Component" key="artifactoryServerConfigManager"-->
+               <!--class="org.jfrog.bamboo.admin.ServerConfigManager"/>-->
+
+    <!--Server admin-->
+    <xwork key="manageArtifactoryServersAdmin" name="Artifactory Plugin">
+        <package name="configureArtifactoryPlugin" extends="admin">
+            <action name="manageArtifactoryServers" class="org.jfrog.bamboo.admin.ManageArtifactoryServersAction">
+                <result name="input" type="freemarker">/admin/manageArtifactoryServers.ftl</result>
+                <result name="success" type="freemarker">/admin/manageArtifactoryServers.ftl</result>
+            </action>
+            <!--<action name="existingArtifactoryServer" class="org.jfrog.bamboo.admin.ExistingArtifactoryServerAction"-->
+                    <!--method="browse">-->
+                <!--<result name="success" type="freemarker">/admin/existingArtifactoryServerView.ftl</result>-->
+            <!--</action>-->
+            <!--<action name="configureArtifactoryServer" class="org.jfrog.bamboo.admin.ConfigureArtifactoryServerAction">-->
+                <!--<result name="input" type="freemarker">/admin/configureArtifactoryServer.ftl</result>-->
+                <!--<result name="success" type="freemarker">/admin/configureArtifactoryServer.ftl</result>-->
+            <!--</action>-->
+            <!--<action name="createServer" class="org.jfrog.bamboo.admin.ConfigureArtifactoryServerAction" method="create">-->
+                <!--<result name="input" type="freemarker">/admin/manageArtifactoryServers.ftl</result>-->
+                <!--<result name="error" type="freemarker">/admin/manageArtifactoryServers.ftl</result>-->
+                <!--<result name="success" type="redirect">/admin/manageArtifactoryServers.action</result>-->
+                <!--<param name="mode">add</param>-->
+            <!--</action>-->
+            <!--<action name="updateBintrayConfig" class="org.jfrog.bamboo.admin.ConfigureBintrayAction" method="updateBintray">-->
+                <!--<result name="input" type="freemarker">/admin/manageArtifactoryServers.ftl</result>-->
+                <!--<result name="success" type="redirect">/admin/manageArtifactoryServers.action</result>-->
+            <!--</action>-->
+            <!--<action name="editServer" class="org.jfrog.bamboo.admin.ConfigureArtifactoryServerAction" method="edit">-->
+                <!--<result name="input" type="freemarker">/admin/configureArtifactoryServer.ftl</result>-->
+                <!--<param name="mode">edit</param>-->
+            <!--</action>-->
+            <!--<action name="updateServer" class="org.jfrog.bamboo.admin.ConfigureArtifactoryServerAction" method="update">-->
+                <!--<result name="input" type="freemarker">/admin/configureArtifactoryServer.ftl</result>-->
+                <!--<result name="success" type="redirect">/admin/manageArtifactoryServers.action</result>-->
+                <!--<param name="mode">edit</param>-->
+            <!--</action>-->
+            <!--<action name="deleteServer" class="org.jfrog.bamboo.admin.ConfigureArtifactoryServerAction" method="delete">-->
+                <!--<result name="error" type="freemarker">/admin/manageArtifactoryServers.ftl</result>-->
+                <!--<result name="success" type="freemarker">/admin/manageArtifactoryServers.ftl</result>-->
+            <!--</action>-->
+        </package>
+    </xwork>
+
+    <web-item key="configureArtifactoryPlugin" name="Artifactory Plugin" section="system.admin/plugins">
+        <label key="Artifactory Plugin"/>
+        <link linkId="configureArtifactoryPlugin">/admin/manageArtifactoryServers.action</link>
+    </web-item>
+
 </atlassian-plugin>
