@@ -13,9 +13,9 @@
 
 <p>You can use this page to add, edit and delete Artifactory and Bintray configurations.</p>
 
-[#--[@ww.action name="existingArtifactoryServer" executeResult="true" /]--]
+[@ww.action name="existingArtifactoryServer" executeResult="true" /]
 
-[#--<br/>--]
+<br/>
 
 [#--[@ww.action name="configureArtifactoryServer!default" executeResult="true" /]--]
 

@@ -10,8 +10,8 @@
     <!-- add our i18n resource -->
     <resource type="i18n" name="i18n" location="i18n"/>
 
-    <!--<component name="Artifactory Server Configuration Management Component" key="artifactoryServerConfigManager"-->
-               <!--class="org.jfrog.bamboo.admin.ServerConfigManager"/>-->
+    <component name="Artifactory Server Configuration Management Component" key="artifactoryServerConfigManager"
+               class="org.jfrog.bamboo.admin.ServerConfigManager"/>
 
     <!--Server admin-->
     <xwork key="manageArtifactoryServersAdmin" name="Artifactory Plugin">
@@ -20,10 +20,10 @@
                 <result name="input" type="freemarker">/admin/manageArtifactoryServers.ftl</result>
                 <result name="success" type="freemarker">/admin/manageArtifactoryServers.ftl</result>
             </action>
-            <!--<action name="existingArtifactoryServer" class="org.jfrog.bamboo.admin.ExistingArtifactoryServerAction"-->
-                    <!--method="browse">-->
-                <!--<result name="success" type="freemarker">/admin/existingArtifactoryServerView.ftl</result>-->
-            <!--</action>-->
+            <action name="existingArtifactoryServer" class="org.jfrog.bamboo.admin.ExistingArtifactoryServerAction"
+                    method="browse">
+                <result name="success" type="freemarker">/admin/existingArtifactoryServerView.ftl</result>
+            </action>
             <!--<action name="configureArtifactoryServer" class="org.jfrog.bamboo.admin.ConfigureArtifactoryServerAction">-->
                 <!--<result name="input" type="freemarker">/admin/configureArtifactoryServer.ftl</result>-->
                 <!--<result name="success" type="freemarker">/admin/configureArtifactoryServer.ftl</result>-->
