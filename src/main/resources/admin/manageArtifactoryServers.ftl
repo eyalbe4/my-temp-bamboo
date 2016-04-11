@@ -17,7 +17,7 @@
 
 <br/>
 
-[#--[@ww.action name="configureArtifactoryServer!default" executeResult="true" /]--]
+[@ww.action name="configureArtifactoryServer!default" executeResult="true" /]
 
 </body>
 </html>

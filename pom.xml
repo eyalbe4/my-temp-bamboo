@@ -8,15 +8,15 @@
     <groupId>org.jfrog.bamboo</groupId>
     <artifactId>bamboo-artifactory-plugin</artifactId>
     <version>2.0.x-SNAPSHOT</version>
+    <name>Bamboo JFrog Artifactory Plugin</name>
+    <description>Artifactory Build Info plugin for Atlassian Bamboo.</description>
+    <packaging>atlassian-plugin</packaging>
 
     <organization>
         <name>Bamboo Artifactory Plugin</name>
         <url>http://www.jfrog.com</url>
     </organization>
 
-    <name>Bamboo JFrog Artifactory Plugin</name>
-    <description>Artifactory Build Info plugin for Atlassian Bamboo.</description>
-    <packaging>atlassian-plugin</packaging>
 
     <licenses>
         <license>
@@ -41,6 +41,21 @@
     </properties>
 
     <dependencies>
+        <!-- new -->
+
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-smile</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+
+        <!-- old -->
         <dependency>
             <groupId>com.atlassian.bamboo</groupId>
             <artifactId>atlassian-bamboo-web</artifactId>

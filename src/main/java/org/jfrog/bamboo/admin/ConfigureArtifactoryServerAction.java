@@ -49,14 +49,13 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
 
 //    private String bintrayUsername;
 //    private String bintrayApiKey;
-//    private String sonatypeOssUsername;
-//    private String sonatypeOssPassword;
+    private String sonatypeOssUsername;
+    private String sonatypeOssPassword;
 
     private transient ServerConfigManager serverConfigManager;
 
-    public ConfigureArtifactoryServerAction() {
-        serverConfigManager = (ServerConfigManager) ContainerManager.getComponent(
-                ConstantValues.PLUGIN_CONFIG_MANAGER_KEY);
+    public ConfigureArtifactoryServerAction(ServerConfigManager serverConfigManager) {
+        this.serverConfigManager = serverConfigManager;
 //        populateBintrayConfigToView();
         mode = "add";
         timeout = 300;
@@ -197,14 +196,14 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
 //    public String getBintrayApiKey() {
 //        return bintrayApiKey;
 //    }
-//
-//    public String getSonatypeOssUsername() {
-//        return sonatypeOssUsername;
-//    }
-//
-//    public String getSonatypeOssPassword() {
-//        return sonatypeOssPassword;
-//    }
+
+    public String getSonatypeOssUsername() {
+        return sonatypeOssUsername;
+    }
+
+    public String getSonatypeOssPassword() {
+        return sonatypeOssPassword;
+    }
 
     private void testConnection() {
 //        ArtifactoryBuildInfoClient testClient;

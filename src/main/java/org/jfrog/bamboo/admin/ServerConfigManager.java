@@ -22,6 +22,8 @@ import com.atlassian.bamboo.security.EncryptionService;
 import com.atlassian.bamboo.spring.ComponentAccessor;
 import com.atlassian.bamboo.variable.CustomVariableContext;
 import com.atlassian.bandana.BandanaManager;
+import com.atlassian.bandana.DefaultBandanaManager;
+import com.atlassian.bandana.impl.MemoryBandanaPersister;
 import com.atlassian.spring.container.ContainerManager;
 import com.google.common.collect.Lists;
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -50,7 +52,7 @@ public class ServerConfigManager implements Serializable {
     private transient Logger log = Logger.getLogger(ServerConfigManager.class);
 
     private static final String ARTIFACTORY_CONFIG_KEY = "org.jfrog.bamboo.server.configurations";
-    private static final String BINTRAY_CONFIG_KEY = "org.jfrog.bamboo.bintray.configurations";
+//    private static final String BINTRAY_CONFIG_KEY = "org.jfrog.bamboo.bintray.configurations";
 
     private EncryptionService encryptionService = ComponentAccessor.ENCRYPTION_SERVICE.get();
     private final List<ServerConfig> configuredServers = new CopyOnWriteArrayList<ServerConfig>();
@@ -59,11 +61,15 @@ public class ServerConfigManager implements Serializable {
     private AtomicLong nextAvailableId = new AtomicLong(0);
     private CustomVariableContext customVariableContext;
 
-    public static ServerConfigManager getInstance() {
-        ServerConfigManager serverConfigManager = new ServerConfigManager();
-        ContainerManager.autowireComponent(serverConfigManager);
-        return serverConfigManager;
+    public ServerConfigManager(BandanaManager bandanaManager) {
+        setBandanaManager( bandanaManager );
     }
+
+//    public static ServerConfigManager getInstance() {
+//        ServerConfigManager serverConfigManager = new ServerConfigManager(new DefaultBandanaManager(new MemoryBandanaPersister()));
+//        ContainerManager.autowireComponent(serverConfigManager);
+//        return serverConfigManager;
+//    }
 
     public List<ServerConfig> getAllServerConfigs() {
         return Lists.newArrayList(configuredServers);
@@ -138,6 +144,10 @@ public class ServerConfigManager implements Serializable {
 //                log.error("Could not load Bintray configuration.");
 //            }
 //        }
+    }
+
+    public BandanaManager getBandanaManager() {
+        return this.bandanaManager;
     }
 
 //    private BintrayConfig decryptExistingBintrayConfig(BintrayConfig bintrayConfig) throws EncryptionException {
@@ -297,5 +307,9 @@ public class ServerConfigManager implements Serializable {
 
     public void setCustomVariableContext(CustomVariableContext customVariableContext) {
         this.customVariableContext = customVariableContext;
+    }
+
+    public CustomVariableContext setCustomVariableContext() {
+        return null;
     }
 }

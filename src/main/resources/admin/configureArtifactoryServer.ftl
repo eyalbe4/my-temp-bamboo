@@ -37,8 +37,8 @@ showActionErrors='true']
 [/@ww.form]
 [#if mode=='add']
 <hr>
-<h1>Bintray Configuration</h1>
-<p>The Bintray Configuration details are used for the "Maven Central Sync" option included as part of the "Push to Bintray" functionality</p>
+[#--<h1>Bintray Configuration</h1>--]
+[#--<p>The Bintray Configuration details are used for the "Maven Central Sync" option included as part of the "Push to Bintray" functionality</p>--]
 [#--[@ww.form action='updateBintrayConfig' submitLabelKey='global.buttons.update'  showActionMessages='false' showActionErrors='false']--]
 
     [#--[@ww.param name='buttons']--]
@@ -53,5 +53,5 @@ showActionErrors='true']
 [#--[/@ww.form]--]
 [#--[/#if]--]
 [#--[#if mode=='edit']--]
-[#--</body>localh--]
-[#--[/#if]--]
+</body>localh
+[/#if]
