@@ -37,21 +37,21 @@ showActionErrors='true']
 [/@ww.form]
 [#if mode=='add']
 <hr>
-[#--<h1>Bintray Configuration</h1>--]
-[#--<p>The Bintray Configuration details are used for the "Maven Central Sync" option included as part of the "Push to Bintray" functionality</p>--]
-[#--[@ww.form action='updateBintrayConfig' submitLabelKey='global.buttons.update'  showActionMessages='false' showActionErrors='false']--]
+<h1>Bintray Configuration</h1>
+<p>The Bintray Configuration details are used for the "Maven Central Sync" option included as part of the "Push to Bintray" functionality</p>
+[@ww.form action='updateBintrayConfig' submitLabelKey='global.buttons.update'  showActionMessages='true' showActionErrors='true']
 
-    [#--[@ww.param name='buttons']--]
-        [#--[@ww.submit value="Test Bintray" name="bintrayTest" theme='simple' /]--]
-    [#--[/@ww.param]--]
+    [@ww.param name='buttons']
+        [@ww.submit value="Test Bintray" name="bintrayTest" theme='simple' /]
+    [/@ww.param]
 
-    [#--[@ww.textfield labelKey="bintray.username" name="bintrayUsername"/]--]
-    [#--[@ww.password labelKey='bintray.apikey' name="bintrayApiKey" showPassword='true'/]--]
-    [#--[@ww.textfield labelKey='bintray.sonatype.username' name="sonatypeOssUsername"/]--]
-    [#--[@ww.password labelKey='bintray.sonatype.password' name="sonatypeOssPassword" showPassword='true'/]--]
+    [@ww.textfield labelKey="bintray.username" name="bintrayUsername"/]
+    [@ww.password labelKey='bintray.apikey' name="bintrayApiKey" showPassword='true'/]
+    [@ww.textfield labelKey='bintray.sonatype.username' name="sonatypeOssUsername"/]
+    [@ww.password labelKey='bintray.sonatype.password' name="sonatypeOssPassword" showPassword='true'/]
 
-[#--[/@ww.form]--]
-[#--[/#if]--]
-[#--[#if mode=='edit']--]
+[/@ww.form]
+[/#if]
+[#if mode=='edit']
 </body>localh
 [/#if]

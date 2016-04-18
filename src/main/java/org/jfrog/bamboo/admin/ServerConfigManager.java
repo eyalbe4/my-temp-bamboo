@@ -29,9 +29,9 @@ import com.google.common.collect.Lists;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-//import org.jfrog.bamboo.util.BambooBuildInfoLog;
-//import org.jfrog.bamboo.util.TaskUtils;
-//import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
+import org.jfrog.bamboo.util.BambooBuildInfoLog;
+import org.jfrog.bamboo.util.TaskUtils;
+import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,11 +52,11 @@ public class ServerConfigManager implements Serializable {
     private transient Logger log = Logger.getLogger(ServerConfigManager.class);
 
     private static final String ARTIFACTORY_CONFIG_KEY = "org.jfrog.bamboo.server.configurations";
-//    private static final String BINTRAY_CONFIG_KEY = "org.jfrog.bamboo.bintray.configurations";
+    private static final String BINTRAY_CONFIG_KEY = "org.jfrog.bamboo.bintray.configurations";
 
     private EncryptionService encryptionService = ComponentAccessor.ENCRYPTION_SERVICE.get();
     private final List<ServerConfig> configuredServers = new CopyOnWriteArrayList<ServerConfig>();
-//    private BintrayConfig bintrayConfig;
+    private BintrayConfig bintrayConfig;
     private transient BandanaManager bandanaManager;
     private AtomicLong nextAvailableId = new AtomicLong(0);
     private CustomVariableContext customVariableContext;
@@ -65,11 +65,11 @@ public class ServerConfigManager implements Serializable {
         setBandanaManager( bandanaManager );
     }
 
-//    public static ServerConfigManager getInstance() {
-//        ServerConfigManager serverConfigManager = new ServerConfigManager(new DefaultBandanaManager(new MemoryBandanaPersister()));
-//        ContainerManager.autowireComponent(serverConfigManager);
-//        return serverConfigManager;
-//    }
+    public static ServerConfigManager getInstance() {
+        ServerConfigManager serverConfigManager = new ServerConfigManager(new DefaultBandanaManager(new MemoryBandanaPersister()));
+        ContainerManager.autowireComponent(serverConfigManager);
+        return serverConfigManager;
+    }
 
     public List<ServerConfig> getAllServerConfigs() {
         return Lists.newArrayList(configuredServers);
@@ -114,10 +114,10 @@ public class ServerConfigManager implements Serializable {
         }
     }
 
-//    public void updateBintrayConfiguration(BintrayConfig bintrayConfig) {
-//        this.bintrayConfig = bintrayConfig;
-//        persistBintray();
-//    }
+    public void updateBintrayConfiguration(BintrayConfig bintrayConfig) {
+        this.bintrayConfig = bintrayConfig;
+        persistBintray();
+    }
 
     public void setBandanaManager(BandanaManager bandanaManager) {
         this.bandanaManager = bandanaManager;
@@ -136,36 +136,36 @@ public class ServerConfigManager implements Serializable {
             }
         }
 
-//        Object existingBintrayConfig = bandanaManager.getValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, BINTRAY_CONFIG_KEY);
-//        if (existingBintrayConfig != null) {
-//            try {
-//                bintrayConfig = decryptExistingBintrayConfig((BintrayConfig) existingBintrayConfig);
-//            } catch (EncryptionException e) {
-//                log.error("Could not load Bintray configuration.");
-//            }
-//        }
+        Object existingBintrayConfig = bandanaManager.getValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, BINTRAY_CONFIG_KEY);
+        if (existingBintrayConfig != null) {
+            try {
+                bintrayConfig = decryptExistingBintrayConfig((BintrayConfig) existingBintrayConfig);
+            } catch (EncryptionException e) {
+                log.error("Could not load Bintray configuration.");
+            }
+        }
     }
 
     public BandanaManager getBandanaManager() {
         return this.bandanaManager;
     }
 
-//    private BintrayConfig decryptExistingBintrayConfig(BintrayConfig bintrayConfig) throws EncryptionException {
-//        String bintrayApi = bintrayConfig.getBintrayApiKey();
-//        String sonatypeOssPassword = bintrayConfig.getSonatypeOssPassword();
-//        bintrayApi = TaskUtils.decryptIfNeeded(bintrayApi);
-//        sonatypeOssPassword = TaskUtils.decryptIfNeeded(sonatypeOssPassword);
-//        return new BintrayConfig(bintrayConfig.getBintrayUsername(), bintrayApi,
-//                bintrayConfig.getSonatypeOssUsername(), sonatypeOssPassword);
-//    }
+    private BintrayConfig decryptExistingBintrayConfig(BintrayConfig bintrayConfig) throws EncryptionException {
+        String bintrayApi = bintrayConfig.getBintrayApiKey();
+        String sonatypeOssPassword = bintrayConfig.getSonatypeOssPassword();
+        bintrayApi = TaskUtils.decryptIfNeeded(bintrayApi);
+        sonatypeOssPassword = TaskUtils.decryptIfNeeded(sonatypeOssPassword);
+        return new BintrayConfig(bintrayConfig.getBintrayUsername(), bintrayApi,
+                bintrayConfig.getSonatypeOssUsername(), sonatypeOssPassword);
+    }
 
-//    public void setBintrayConfig(BintrayConfig bintrayConfig) {
-//        this.bintrayConfig = bintrayConfig;
-//    }
+    public void setBintrayConfig(BintrayConfig bintrayConfig) {
+        this.bintrayConfig = bintrayConfig;
+    }
 
-//    public BintrayConfig getBintrayConfig() {
-//        return bintrayConfig;
-//    }
+    public BintrayConfig getBintrayConfig() {
+        return bintrayConfig;
+    }
 
     public List<String> getDeployableRepos(long serverId) {
         return getDeployableRepos(serverId, null, null);
@@ -178,9 +178,9 @@ public class ServerConfigManager implements Serializable {
                     "configuration by the ID " + serverId);
             return Lists.newArrayList();
         }
-//        ArtifactoryBuildInfoClient client;
+        ArtifactoryBuildInfoClient client;
 
-//        String serverUrl = substituteVariables(serverConfig.getUrl());
+        String serverUrl = substituteVariables(serverConfig.getUrl());
         String username = null;
         String password = null;
         if (req != null) {
@@ -188,7 +188,7 @@ public class ServerConfigManager implements Serializable {
             password = req.getParameter("password");
         }
         if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
-//            password = TaskUtils.decryptIfNeeded(password);
+            password = TaskUtils.decryptIfNeeded(password);
         } else {
             username = serverConfig.getUsername();
             password = serverConfig.getPassword();
@@ -197,31 +197,31 @@ public class ServerConfigManager implements Serializable {
         password = substituteVariables(password);
 
         if (StringUtils.isBlank(username)) {
-//            client = new ArtifactoryBuildInfoClient(serverUrl, new BambooBuildInfoLog(log));
+            client = new ArtifactoryBuildInfoClient(serverUrl, new BambooBuildInfoLog(log));
         } else {
-//            client = new ArtifactoryBuildInfoClient(serverUrl, username, password,
-//                    new BambooBuildInfoLog(log));
+            client = new ArtifactoryBuildInfoClient(serverUrl, username, password,
+                    new BambooBuildInfoLog(log));
         }
 
-//        client.setConnectionTimeout(serverConfig.getTimeout());
+        client.setConnectionTimeout(serverConfig.getTimeout());
 
-        return Arrays.asList(new String[]{"mock-repo1", "mock-repo2", "mock-repo3"}); // TODO remove this
-//        try {
-//            return client.getLocalRepositoriesKeys();
-//
-//        } catch (IOException ioe) {
-//            log.error("Error while retrieving target repository list from: " + serverUrl, ioe);
-//            try {
-//                if (resp != null && ioe.getMessage().contains("401"))
-//                    resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-//                if (resp != null && ioe.getMessage().contains("404"))
-//                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-//            } catch (IOException e) {
-//                log.error("Error while sending error to response", e);
-//            }
-//
-//            return Lists.newArrayList();
-//        }
+//        return Arrays.asList(new String[]{"mock-repo1", "mock-repo2", "mock-repo3"}); // TODO remove this
+        try {
+            return client.getLocalRepositoriesKeys();
+
+        } catch (IOException ioe) {
+            log.error("Error while retrieving target repository list from: " + serverUrl, ioe);
+            try {
+                if (resp != null && ioe.getMessage().contains("401"))
+                    resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                if (resp != null && ioe.getMessage().contains("404"))
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            } catch (IOException e) {
+                log.error("Error while sending error to response", e);
+            }
+
+            return Lists.newArrayList();
+        }
 
     }
 
@@ -239,43 +239,43 @@ public class ServerConfigManager implements Serializable {
                     "configuration by the ID " + serverId);
             return Lists.newArrayList();
         }
-//        ArtifactoryBuildInfoClient client;
+        ArtifactoryBuildInfoClient client;
 
         String serverUrl = substituteVariables(serverConfig.getUrl());
         String username;
         String password;
         if (StringUtils.isNotBlank(req.getParameter("user")) && StringUtils.isNotBlank(req.getParameter("password"))) {
             username = substituteVariables(req.getParameter("user"));
-//            password = substituteVariables(TaskUtils.decryptIfNeeded(req.getParameter("password")));
+            password = substituteVariables(TaskUtils.decryptIfNeeded(req.getParameter("password")));
         } else {
             username = substituteVariables(serverConfig.getUsername());
             password = substituteVariables(serverConfig.getPassword());
         }
 
-//        if (StringUtils.isBlank(username)) {
-//            client = new ArtifactoryBuildInfoClient(serverUrl, new BambooBuildInfoLog(log));
-//        } else {
-//            client = new ArtifactoryBuildInfoClient(serverUrl, username, password,
-//                    new BambooBuildInfoLog(log));
-//        }
-//
-//        client.setConnectionTimeout(serverConfig.getTimeout());
+        if (StringUtils.isBlank(username)) {
+            client = new ArtifactoryBuildInfoClient(serverUrl, new BambooBuildInfoLog(log));
+        } else {
+            client = new ArtifactoryBuildInfoClient(serverUrl, username, password,
+                    new BambooBuildInfoLog(log));
+        }
 
-//        try {
-//            return client.getVirtualRepositoryKeys();
-//        } catch (IOException ioe) {
-//            log.error("Error while retrieving resolving repository list from: " + serverUrl, ioe);
-//            try {
-//                if (ioe.getMessage().contains("401"))
-//                    resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-//                if (ioe.getMessage().contains("404"))
-//                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-//            } catch (IOException e) {
-//                log.error("Error while sending error to response", e);
-//            }
-//            return Lists.newArrayList();
-//        }
-        return Arrays.asList(new String[]{"mock-virt-repo1", "mock-virt-repo2", "mock-virt-repo3"}); // TODO remove this
+        client.setConnectionTimeout(serverConfig.getTimeout());
+
+        try {
+            return client.getVirtualRepositoryKeys();
+        } catch (IOException ioe) {
+            log.error("Error while retrieving resolving repository list from: " + serverUrl, ioe);
+            try {
+                if (ioe.getMessage().contains("401"))
+                    resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                if (ioe.getMessage().contains("404"))
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            } catch (IOException e) {
+                log.error("Error while sending error to response", e);
+            }
+            return Lists.newArrayList();
+        }
+//        return Arrays.asList(new String[]{"mock-virt-repo1", "mock-virt-repo2", "mock-virt-repo3"}); // TODO remove this
     }
 
     private synchronized void persist() {
@@ -288,22 +288,22 @@ public class ServerConfigManager implements Serializable {
         bandanaManager.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, ARTIFACTORY_CONFIG_KEY, serverConfigs);
     }
 
-//    private synchronized void persistBintray() {
-//        if (bintrayConfig != null) {
-//            bandanaManager.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, BINTRAY_CONFIG_KEY, createEncryptedBintrayConfig(bintrayConfig));
-//        }
-//    }
+    private synchronized void persistBintray() {
+        if (bintrayConfig != null) {
+            bandanaManager.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, BINTRAY_CONFIG_KEY, createEncryptedBintrayConfig(bintrayConfig));
+        }
+    }
 
-//    private BintrayConfig createEncryptedBintrayConfig(BintrayConfig bintrayConfig) {
-//        BintrayConfig encConfig = new BintrayConfig();
-//        String apiKey = encryptionService.encrypt(bintrayConfig.getBintrayApiKey());
-//        String sonatypeOssPassword = bintrayConfig.getSonatypeOssPassword();
-//        encConfig.setBintrayApiKey(apiKey);
-//        encConfig.setSonatypeOssPassword(encryptionService.encrypt(sonatypeOssPassword));
-//        encConfig.setBintrayUsername(bintrayConfig.getBintrayUsername());
-//        encConfig.setSonatypeOssUsername(bintrayConfig.getSonatypeOssUsername());
-//        return encConfig;
-//    }
+    private BintrayConfig createEncryptedBintrayConfig(BintrayConfig bintrayConfig) {
+        BintrayConfig encConfig = new BintrayConfig();
+        String apiKey = encryptionService.encrypt(bintrayConfig.getBintrayApiKey());
+        String sonatypeOssPassword = bintrayConfig.getSonatypeOssPassword();
+        encConfig.setBintrayApiKey(apiKey);
+        encConfig.setSonatypeOssPassword(encryptionService.encrypt(sonatypeOssPassword));
+        encConfig.setBintrayUsername(bintrayConfig.getBintrayUsername());
+        encConfig.setSonatypeOssUsername(bintrayConfig.getSonatypeOssUsername());
+        return encConfig;
+    }
 
     public void setCustomVariableContext(CustomVariableContext customVariableContext) {
         this.customVariableContext = customVariableContext;

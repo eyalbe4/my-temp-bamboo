@@ -38,10 +38,58 @@
         <atlassian.spring.scanner.version>1.2.6</atlassian.spring.scanner.version>
         <!-- This key is used to keep the consistency between the key in atlassian-plugin.xml and the key to generate bundle. -->
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+
+        <buildinfo.version>2.5.6</buildinfo.version>
+        <buildinfo.gradle.version>4.2.0</buildinfo.gradle.version>
+        <buildinfo.ivy.version>2.5.3</buildinfo.ivy.version>
+        <buildinfo.maven.version>2.5.5</buildinfo.maven.version>
     </properties>
 
     <dependencies>
         <!-- new -->
+        <dependency>
+            <groupId>org.jfrog.buildinfo</groupId>
+            <artifactId>build-info-api</artifactId>
+            <version>${buildinfo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jfrog.buildinfo</groupId>
+            <artifactId>build-info-client</artifactId>
+            <version>${buildinfo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jfrog.buildinfo</groupId>
+            <artifactId>build-info-vcs</artifactId>
+            <version>${buildinfo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jfrog.buildinfo</groupId>
+            <artifactId>build-info-extractor</artifactId>
+            <version>${buildinfo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jfrog.buildinfo</groupId>
+            <artifactId>build-info-extractor-gradle</artifactId>
+            <version>${buildinfo.gradle.version}</version>
+            <classifier>    uber</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jfrog.buildinfo</groupId>
+            <artifactId>build-info-extractor-ivy</artifactId>
+            <version>${buildinfo.ivy.version}</version>
+            <classifier>uber</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jfrog.buildinfo</groupId>
+            <artifactId>build-info-extractor-maven3</artifactId>
+            <version>${buildinfo.maven.version}</version>
+            <classifier>uber</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jfrog.buildinfo</groupId>
+            <artifactId>build-info-extractor-maven3</artifactId>
+            <version>${buildinfo.maven.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.codehaus.jackson</groupId>

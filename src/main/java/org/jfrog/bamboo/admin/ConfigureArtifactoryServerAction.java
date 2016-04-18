@@ -22,10 +22,10 @@ import com.atlassian.spring.container.ContainerManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-//import org.jfrog.bamboo.util.BambooBuildInfoLog;
+import org.jfrog.bamboo.util.BambooBuildInfoLog;
 import org.jfrog.bamboo.util.ConstantValues;
-//import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
-//import org.jfrog.build.util.VersionException;
+import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
+import org.jfrog.build.util.VersionException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -47,8 +47,8 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
     private String password;
     private int timeout;
 
-//    private String bintrayUsername;
-//    private String bintrayApiKey;
+    private String bintrayUsername;
+    private String bintrayApiKey;
     private String sonatypeOssUsername;
     private String sonatypeOssPassword;
 
@@ -56,20 +56,20 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
 
     public ConfigureArtifactoryServerAction(ServerConfigManager serverConfigManager) {
         this.serverConfigManager = serverConfigManager;
-//        populateBintrayConfigToView();
+        populateBintrayConfigToView();
         mode = "add";
         timeout = 300;
     }
 
-//    private void populateBintrayConfigToView() {
-//        BintrayConfig config = serverConfigManager.getBintrayConfig();
-//        if (config != null) {
-//            this.bintrayUsername = config.getBintrayUsername();
-//            this.bintrayApiKey = config.getBintrayApiKey();
-//            this.sonatypeOssUsername = config.getSonatypeOssUsername();
-//            this.sonatypeOssPassword = config.getSonatypeOssPassword();
-//        }
-//    }
+    private void populateBintrayConfigToView() {
+        BintrayConfig config = serverConfigManager.getBintrayConfig();
+        if (config != null) {
+            this.bintrayUsername = config.getBintrayUsername();
+            this.bintrayApiKey = config.getBintrayApiKey();
+            this.sonatypeOssUsername = config.getSonatypeOssUsername();
+            this.sonatypeOssPassword = config.getSonatypeOssPassword();
+        }
+    }
 
     @Override
     public void validate() {
@@ -189,13 +189,13 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
         this.timeout = timeout;
     }
 
-//    public String getBintrayUsername() {
-//        return bintrayUsername;
-//    }
-//
-//    public String getBintrayApiKey() {
-//        return bintrayApiKey;
-//    }
+    public String getBintrayUsername() {
+        return bintrayUsername;
+    }
+
+    public String getBintrayApiKey() {
+        return bintrayApiKey;
+    }
 
     public String getSonatypeOssUsername() {
         return sonatypeOssUsername;
@@ -206,21 +206,21 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
     }
 
     private void testConnection() {
-//        ArtifactoryBuildInfoClient testClient;
-//        if (StringUtils.isNotBlank(username)) {
-//            testClient = new ArtifactoryBuildInfoClient(url, username, password, new BambooBuildInfoLog(log));
-//        } else {
-//            testClient = new ArtifactoryBuildInfoClient(url, new BambooBuildInfoLog(log));
-//        }
-//        testClient.setConnectionTimeout(timeout);
-//        try {
-//            testClient.verifyCompatibleArtifactoryVersion();
-//            addActionMessage("Connection successful!");
-//        } catch (VersionException ve) {
-//            handleConnectionException(ve);
-//        } catch (IllegalArgumentException iae) {
-//            handleConnectionException(iae);
-//        }
+        ArtifactoryBuildInfoClient testClient;
+        if (StringUtils.isNotBlank(username)) {
+            testClient = new ArtifactoryBuildInfoClient(url, username, password, new BambooBuildInfoLog(log));
+        } else {
+            testClient = new ArtifactoryBuildInfoClient(url, new BambooBuildInfoLog(log));
+        }
+        testClient.setConnectionTimeout(timeout);
+        try {
+            testClient.verifyCompatibleArtifactoryVersion();
+            addActionMessage("Connection successful!");
+        } catch (VersionException ve) {
+            handleConnectionException(ve);
+        } catch (IllegalArgumentException iae) {
+            handleConnectionException(iae);
+        }
     }
 
     private void handleConnectionException(Exception e) {
