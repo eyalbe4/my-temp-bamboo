@@ -5,7 +5,10 @@
 <head><title>Update Artifactory Server</title></head>
 <body>
 [#else]
-    [#assign targetAction = 'createServer']
+    [#assign targetAction = 'createArtifactoryServer']
+<html>
+<head><title>Create Artifactory Server</title></head>
+<body>
 [/#if]
 
 [#assign cancelUri = '/admin/manageArtifactoryServers.action' /]
@@ -17,14 +20,6 @@ cancelUri=cancelUri
 descriptionKey='artifactory.server.description'
 showActionErrors='true']
 
-    [#if actionErrors?? && (actionErrors.size()>0)]
-    <div class="warningBox">
-        [#foreach error in formattedActionErrors]
-                            ${error}
-        [/#foreach]
-    </div>
-    [/#if]
-
     [@ww.param name='buttons']
         [@ww.submit value="Test" name="artifactoryTest" theme='simple' /]
     [/@ww.param]
@@ -35,23 +30,4 @@ showActionErrors='true']
     [@ww.password labelKey='artifactory.server.password' name="password" showPassword='true'/]
     [@ww.textfield labelKey='artifactory.server.timeout' name="timeout" required="true"/]
 [/@ww.form]
-[#if mode=='add']
-<hr>
-<h1>Bintray Configuration</h1>
-<p>The Bintray Configuration details are used for the "Maven Central Sync" option included as part of the "Push to Bintray" functionality</p>
-[@ww.form action='updateBintrayConfig' submitLabelKey='global.buttons.update'  showActionMessages='true' showActionErrors='true']
-
-    [@ww.param name='buttons']
-        [@ww.submit value="Test Bintray" name="bintrayTest" theme='simple' /]
-    [/@ww.param]
-
-    [@ww.textfield labelKey="bintray.username" name="bintrayUsername"/]
-    [@ww.password labelKey='bintray.apikey' name="bintrayApiKey" showPassword='true'/]
-    [@ww.textfield labelKey='bintray.sonatype.username' name="sonatypeOssUsername"/]
-    [@ww.password labelKey='bintray.sonatype.password' name="sonatypeOssPassword" showPassword='true'/]
-
-[/@ww.form]
-[/#if]
-[#if mode=='edit']
-</body>localh
-[/#if]
+</body>

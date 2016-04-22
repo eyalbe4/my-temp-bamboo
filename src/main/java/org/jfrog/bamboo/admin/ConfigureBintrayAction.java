@@ -1,9 +1,9 @@
 package org.jfrog.bamboo.admin;
 
-import com.atlassian.bamboo.ww2.BambooActionSupport;
+import com.atlassian.bamboo.configuration.GlobalAdminAction;
 import com.atlassian.bamboo.ww2.aware.permissions.GlobalAdminSecurityAware;
-import com.atlassian.spring.container.ContainerManager;
-import org.jfrog.bamboo.util.ConstantValues;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.jfrog.bamboo.util.TaskUtils;
 
 import java.io.IOException;
@@ -11,9 +11,10 @@ import java.io.IOException;
 /**
  * @author Aviad Shikloshi
  */
-public class ConfigureBintrayAction extends BambooActionSupport implements GlobalAdminSecurityAware {
+public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalAdminSecurityAware {
 
-    private final ServerConfigManager serverConfigManager;
+    private static final Logger log = Logger.getLogger(ConfigureBintrayAction.class);
+
 
     private String bintrayUsername;
     private String bintrayApiKey;
@@ -21,30 +22,65 @@ public class ConfigureBintrayAction extends BambooActionSupport implements Globa
     private String sonatypeOssPassword;
     private String bintrayTest;
 
-    public ConfigureBintrayAction() {
-        serverConfigManager = (ServerConfigManager) ContainerManager.getComponent(
-                ConstantValues.PLUGIN_CONFIG_MANAGER_KEY);
+    private ServerConfigManager serverConfigManager;
+
+    private BintrayConfiguration bintrayConfig;
+
+
+
+    public ConfigureBintrayAction(ServerConfigManager serverConfigManager) {
+        this.serverConfigManager = serverConfigManager;
         if (serverConfigManager != null) {
-            BintrayConfig bintrayConfig = serverConfigManager.getBintrayConfig();
-            if (bintrayConfig != null) {
-                this.bintrayUsername = bintrayConfig.getBintrayUsername();
-                this.bintrayApiKey = bintrayConfig.getBintrayApiKey();
-                this.sonatypeOssUsername = bintrayConfig.getSonatypeOssUsername();
-                this.sonatypeOssPassword = bintrayConfig.getSonatypeOssPassword();
-            }
+            bintrayConfig = serverConfigManager.getBintrayConfig();
+            setBintrayConfig(bintrayConfig);
         }
     }
 
-    public String doUpdateBintray() {
+    public String doDefault() throws Exception {
+        getBintrayConfig();
+        return INPUT;
+    }
+
+
+    public String execute() throws Exception
+    {
         if (isBintrayTesting()) {
             bintrayTest();
             return INPUT;
         }
-        serverConfigManager.updateBintrayConfiguration(new BintrayConfig(
-                bintrayUsername, bintrayApiKey, sonatypeOssUsername, sonatypeOssPassword
-        ));
+        BintrayConfiguration newBintrayConf = new BintrayConfiguration(
+                        bintrayUsername, bintrayApiKey, sonatypeOssUsername, sonatypeOssPassword);
+        serverConfigManager.updateBintrayConfiguration(newBintrayConf);
+        setBintrayConfig(newBintrayConf);
         return SUCCESS;
     }
+//
+//    public String doDelete() throws Exception
+//    {
+//        BintrayConfiguration currentBintrayConfig = getBintrayConfig();
+//        if (currentBintrayConfig != null)
+//        {
+//            s.getServerManager().delete(currentMailServer.getId());
+//            return SUCCESS;
+//        }
+//        else
+//        {
+//            addActionError("Could not find a mail server to delete. Check that there is one configured");
+//            return ERROR;
+//        }
+//    }
+
+
+//    public String doUpdateBintray() {
+//        if (isBintrayTesting()) {
+//            bintrayTest();
+//            return INPUT;
+//        }
+//        serverConfigManager.updateBintrayConfiguration(new BintrayConfiguration(
+//                bintrayUsername, bintrayApiKey, sonatypeOssUsername, sonatypeOssPassword
+//        ));
+//        return SUCCESS;
+//    }
 
     public void bintrayTest() {
         String bintrayUrl = TaskUtils.getBintrayUrl();
@@ -60,12 +96,36 @@ public class ConfigureBintrayAction extends BambooActionSupport implements Globa
         }
     }
 
+    public BintrayConfiguration getBintrayConfig() {
+        if (this.bintrayConfig == null) {
+            if (serverConfigManager != null) {
+                bintrayConfig = serverConfigManager.getBintrayConfig();
+                setBintrayConfig(bintrayConfig);
+                return this.bintrayConfig;
+            }
+            else {
+                addActionError("Server manager not loaded!" + new RuntimeException().getStackTrace());
+            }
+        }
+        return new BintrayConfiguration();
+    }
+
+    private void setBintrayConfig(BintrayConfiguration bintrayConfig) {
+        if (bintrayConfig != null) {
+            this.bintrayUsername = bintrayConfig.getBintrayUsername();
+            this.bintrayApiKey = bintrayConfig.getBintrayApiKey();
+            this.sonatypeOssUsername = bintrayConfig.getSonatypeOssUsername();
+            this.sonatypeOssPassword = bintrayConfig.getSonatypeOssPassword();
+            this.bintrayConfig = bintrayConfig;
+        }
+    }
+
     public String getBintrayUsername() {
         return bintrayUsername;
     }
 
     public void setBintrayUsername(String bintrayUsername) {
-        this.bintrayUsername = bintrayUsername;
+        this.bintrayUsername = StringUtils.trim(bintrayUsername);
     }
 
     public String getBintrayApiKey() {

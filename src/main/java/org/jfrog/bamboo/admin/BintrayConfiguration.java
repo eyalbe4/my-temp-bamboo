@@ -7,16 +7,17 @@ import java.io.Serializable;
  *
  * @author Aviad Shikloshi
  */
-public class BintrayConfig implements Serializable {
+public class BintrayConfiguration implements Serializable {
+
 
     private String bintrayUsername;
     private String bintrayApiKey;
     private String sonatypeOssUsername;
     private String sonatypeOssPassword;
 
-    public BintrayConfig() {}
+    public BintrayConfiguration() {}
 
-    public BintrayConfig(String bintrayUsername, String bintrayApiKey, String sonatypeOssUsername, String sonatypeOssPassword) {
+    public BintrayConfiguration(String bintrayUsername, String bintrayApiKey, String sonatypeOssUsername, String sonatypeOssPassword) {
         this.bintrayUsername = bintrayUsername;
         this.bintrayApiKey = bintrayApiKey;
         this.sonatypeOssUsername = sonatypeOssUsername;

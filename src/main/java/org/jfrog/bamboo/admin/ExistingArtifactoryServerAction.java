@@ -17,15 +17,9 @@
 package org.jfrog.bamboo.admin;
 
 //import bucket.core.actions.PagerPaginationSupport;
-import com.atlassian.bamboo.security.BambooPermissionManager;
 import com.atlassian.bamboo.security.GlobalApplicationSecureObject;
-import com.atlassian.bamboo.user.BambooAuthenticationContext;
 import com.atlassian.bamboo.ww2.actions.admin.user.AbstractEntityPagerSupport;
 import com.atlassian.bamboo.ww2.aware.permissions.GlobalAdminSecurityAware;
-import com.atlassian.bandana.BandanaManager;
-import com.atlassian.spring.container.ContainerManager;
-import com.atlassian.user.search.page.DefaultPager;
-import org.jfrog.bamboo.util.ConstantValues;
 
 import java.util.List;
 
