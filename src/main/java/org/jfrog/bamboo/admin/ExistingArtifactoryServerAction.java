@@ -16,7 +16,6 @@
 
 package org.jfrog.bamboo.admin;
 
-//import bucket.core.actions.PagerPaginationSupport;
 import com.atlassian.bamboo.security.GlobalApplicationSecureObject;
 import com.atlassian.bamboo.ww2.actions.admin.user.AbstractEntityPagerSupport;
 import com.atlassian.bamboo.ww2.aware.permissions.GlobalAdminSecurityAware;

@@ -17,7 +17,6 @@
 package org.jfrog.bamboo.admin;
 
 import com.atlassian.bamboo.configuration.GlobalAdminAction;
-import com.atlassian.bamboo.ww2.BambooActionSupport;
 import com.atlassian.bamboo.ww2.aware.permissions.GlobalAdminSecurityAware;
 
 /**

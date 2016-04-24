@@ -7,8 +7,6 @@ import org.apache.log4j.Logger;
 import org.jfrog.bamboo.util.TaskUtils;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * @author Aviad Shikloshi
@@ -158,12 +156,4 @@ public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalA
     public void setSonatypeOssPassword(String sonatypeOssPassword) {
         this.sonatypeOssPassword = sonatypeOssPassword;
     }
-//
-//    public void setBintrayTest(String bintrayTest) {
-//        this.bintrayTest = bintrayTest;
-//    }
-//
-//    public boolean isBintrayTesting() {
-//        return "Test Bintray".equals(this.bintrayTest);
-//    }
 }

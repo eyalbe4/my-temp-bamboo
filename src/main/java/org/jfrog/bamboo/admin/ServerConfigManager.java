@@ -60,12 +60,6 @@ public class ServerConfigManager implements Serializable {
         setBandanaManager( bandanaManager );
     }
 
-//    public static ServerConfigManager getInstance() {
-//        ServerConfigManager serverConfigManager = new ServerConfigManager(new DefaultBandanaManager(new MemoryBandanaPersister()));
-//        ContainerManager.autowireComponent(serverConfigManager);
-//        return serverConfigManager;
-//    }
-
     public List<ServerConfig> getAllServerConfigs() {
         return Lists.newArrayList(configuredServers);
     }
@@ -200,7 +194,6 @@ public class ServerConfigManager implements Serializable {
 
         client.setConnectionTimeout(serverConfig.getTimeout());
 
-//        return Arrays.asList(new String[]{"mock-repo1", "mock-repo2", "mock-repo3"}); // TODO remove this
         try {
             return client.getLocalRepositoriesKeys();
 
@@ -270,7 +263,6 @@ public class ServerConfigManager implements Serializable {
             }
             return Lists.newArrayList();
         }
-//        return Arrays.asList(new String[]{"mock-virt-repo1", "mock-virt-repo2", "mock-virt-repo3"}); // TODO remove this
     }
 
     private synchronized void persist() {

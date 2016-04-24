@@ -6,14 +6,13 @@
         <ul class="toolbar-group">
             <li class="toolbar-item">
                 <a class="toolbar-trigger"
-                   [#--href="[@s.url action='createArtifactoryServer' namespace='/admin' /]">--]
                    href="[@s.url action='configureArtifactoryServer' namespace='/admin' /]">
                 [@s.text name='artifactory.server.add' /]</a>
             </li>
         </ul>
     </div>
 </div>
-[@ui.header pageKey="artifactory.server.manage.heading" descriptionKey="artifactory.server.manage.description"/]
+[@ui.header pageKey="artifactory.server.manage.heading"/]
 
 [@ui.bambooPanel]
 
@@ -31,7 +30,7 @@
         [#foreach serverConfig in serverConfigs]
             <tr>
                 <td>
-                ${serverConfig.url}
+                    <a href="${serverConfig.url}" target="_blank" >${serverConfig.url}</a>
                 </td>
                 <td>
                 ${serverConfig.username}
