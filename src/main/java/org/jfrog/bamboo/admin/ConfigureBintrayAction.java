@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 import org.jfrog.bamboo.util.TaskUtils;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * @author Aviad Shikloshi
@@ -20,7 +22,7 @@ public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalA
     private String bintrayApiKey;
     private String sonatypeOssUsername;
     private String sonatypeOssPassword;
-    private String bintrayTest;
+    private String isSendTest;
 
     private ServerConfigManager serverConfigManager;
 
@@ -44,7 +46,7 @@ public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalA
 
     public String execute() throws Exception
     {
-        if (isBintrayTesting()) {
+        if (isTesting()) {
             bintrayTest();
             return INPUT;
         }
@@ -54,33 +56,6 @@ public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalA
         setBintrayConfig(newBintrayConf);
         return SUCCESS;
     }
-//
-//    public String doDelete() throws Exception
-//    {
-//        BintrayConfiguration currentBintrayConfig = getBintrayConfig();
-//        if (currentBintrayConfig != null)
-//        {
-//            s.getServerManager().delete(currentMailServer.getId());
-//            return SUCCESS;
-//        }
-//        else
-//        {
-//            addActionError("Could not find a mail server to delete. Check that there is one configured");
-//            return ERROR;
-//        }
-//    }
-
-
-//    public String doUpdateBintray() {
-//        if (isBintrayTesting()) {
-//            bintrayTest();
-//            return INPUT;
-//        }
-//        serverConfigManager.updateBintrayConfiguration(new BintrayConfiguration(
-//                bintrayUsername, bintrayApiKey, sonatypeOssUsername, sonatypeOssPassword
-//        ));
-//        return SUCCESS;
-//    }
 
     public void bintrayTest() {
         String bintrayUrl = TaskUtils.getBintrayUrl();
@@ -93,6 +68,25 @@ public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalA
             }
         } catch (IOException e) {
             addActionError("Error while checking connection to Bintray: " + e.getMessage());
+        }
+    }
+
+    public String doBrowse() throws Exception {
+        return super.execute();
+    }
+
+    @Override
+    public void validate() {
+        clearErrorsAndMessages();
+
+        if (StringUtils.isNotEmpty(bintrayUsername)) {
+            if (!StringUtils.isNotEmpty(bintrayApiKey)) {
+                addFieldError("bintrayApiKey", "Please specify Bintray API key.");
+            }
+        } else {
+            if (StringUtils.isNotEmpty(sonatypeOssUsername)) {
+                addFieldError("bintrayUsername", "Bintray Username and API key are mandatory for syncing with Maven Central.");
+            }
         }
     }
 
@@ -118,6 +112,19 @@ public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalA
             this.sonatypeOssPassword = bintrayConfig.getSonatypeOssPassword();
             this.bintrayConfig = bintrayConfig;
         }
+    }
+
+
+    public String getSendTest() {
+        return isSendTest;
+    }
+
+    public void setSendTest(String sendTest) {
+        isSendTest = sendTest;
+    }
+
+    private boolean isTesting() {
+        return StringUtils.isNotBlank(isSendTest);
     }
 
     public String getBintrayUsername() {
@@ -151,12 +158,12 @@ public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalA
     public void setSonatypeOssPassword(String sonatypeOssPassword) {
         this.sonatypeOssPassword = sonatypeOssPassword;
     }
-
-    public void setBintrayTest(String bintrayTest) {
-        this.bintrayTest = bintrayTest;
-    }
-
-    public boolean isBintrayTesting() {
-        return "Test Bintray".equals(this.bintrayTest);
-    }
+//
+//    public void setBintrayTest(String bintrayTest) {
+//        this.bintrayTest = bintrayTest;
+//    }
+//
+//    public boolean isBintrayTesting() {
+//        return "Test Bintray".equals(this.bintrayTest);
+//    }
 }

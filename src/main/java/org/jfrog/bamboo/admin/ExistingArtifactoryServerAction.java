@@ -37,7 +37,6 @@ public class ExistingArtifactoryServerAction extends AbstractEntityPagerSupport 
 	}
 
 	public String doBrowse() throws Exception {
-//		getPaginationSupport().setItems(new DefaultPager(serverConfigManager.getAllServerConfigs()));
 		return super.execute();
 	}
 
@@ -49,9 +48,4 @@ public class ExistingArtifactoryServerAction extends AbstractEntityPagerSupport 
 	public Object getSecuredDomainObject() {
 		return GlobalApplicationSecureObject.INSTANCE;
 	}
-
-//	@Override
-//	public PagerPaginationSupport getPaginationSupport() {
-//		return super.getPaginationSupport();
-//	}
 }

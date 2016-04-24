@@ -38,40 +38,26 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
     private transient Logger log = Logger.getLogger(ConfigureArtifactoryServerAction.class);
 
     private String mode;
-    private String artifactoryTest;
     private long serverId;
     private String url;
     private String username;
     private String password;
     private int timeout;
+    private String isSendTest;
 
-    private String bintrayUsername;
-    private String bintrayApiKey;
-    private String sonatypeOssUsername;
-    private String sonatypeOssPassword;
 
     private transient ServerConfigManager serverConfigManager;
 
     public ConfigureArtifactoryServerAction(ServerConfigManager serverConfigManager) {
         this.serverConfigManager = serverConfigManager;
-        populateBintrayConfigToView();
         mode = "add";
         timeout = 300;
-    }
-
-    private void populateBintrayConfigToView() {
-        BintrayConfiguration config = serverConfigManager.getBintrayConfig();
-        if (config != null) {
-            this.bintrayUsername = config.getBintrayUsername();
-            this.bintrayApiKey = config.getBintrayApiKey();
-            this.sonatypeOssUsername = config.getSonatypeOssUsername();
-            this.sonatypeOssPassword = config.getSonatypeOssPassword();
         }
-    }
 
     @Override
     public void validate() {
         clearErrorsAndMessages();
+
         if (StringUtils.isBlank(url)) {
             addFieldError("url", "Please specify a URL of an Artifactory server.");
         } else {
@@ -109,7 +95,7 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
         }
         updateFieldsFromServerConfig(serverConfig);
         return INPUT;
-    }
+   }
 
 
     public String doUpdate() throws Exception {
@@ -123,12 +109,14 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
 
     public String doDelete() throws Exception {
         serverConfigManager.deleteServerConfiguration(getServerId());
-
         return SUCCESS;
     }
 
-    public String doConfirm()
-    {
+    public String doBrowse() throws Exception {
+        return super.execute();
+    }
+
+    public String confirm() throws Exception {
         return SUCCESS;
     }
 
@@ -140,16 +128,8 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
         this.mode = mode;
     }
 
-    public String getArtifactoryTest() {
-        return artifactoryTest;
-    }
-
     private boolean isTesting() {
-        return "Test".equals(getArtifactoryTest());
-    }
-
-    public void setArtifactoryTest(String artifactoryTest) {
-        this.artifactoryTest = artifactoryTest;
+        return StringUtils.isNotBlank(isSendTest);
     }
 
     public long getServerId() {
@@ -192,20 +172,12 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
         this.timeout = timeout;
     }
 
-    public String getBintrayUsername() {
-        return bintrayUsername;
+    public String getIsSendTest() {
+        return isSendTest;
     }
 
-    public String getBintrayApiKey() {
-        return bintrayApiKey;
-    }
-
-    public String getSonatypeOssUsername() {
-        return sonatypeOssUsername;
-    }
-
-    public String getSonatypeOssPassword() {
-        return sonatypeOssPassword;
+    public void setSendTest(String sendTest) {
+        isSendTest = sendTest;
     }
 
     private void testConnection() {

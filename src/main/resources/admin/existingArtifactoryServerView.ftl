@@ -6,7 +6,8 @@
         <ul class="toolbar-group">
             <li class="toolbar-item">
                 <a class="toolbar-trigger"
-                   href="[@s.url action='createArtifactoryServer' namespace='/admin' /]">
+                   [#--href="[@s.url action='createArtifactoryServer' namespace='/admin' /]">--]
+                   href="[@s.url action='configureArtifactoryServer' namespace='/admin' /]">
                 [@s.text name='artifactory.server.add' /]</a>
             </li>
         </ul>
@@ -44,8 +45,8 @@
                     </a>
                     |
                     <a id="deleteServer-${serverConfig.id}"
-                       href="[@ww.url action='confirmDeleteServer' namespace="admin" serverId=serverConfig.id returnUrl=currentUrl/]">
-                        Delete
+                       href="[@ww.url action='confirmDeleteServer' serverId=serverConfig.id returnUrl=currentUrl/]"
+                       class="delete" title="[@ww.text name='artifactory.server.delete' /]">[@ww.text name="global.buttons.delete" /]
                     </a>
                 </td>
             </tr>

@@ -30,12 +30,11 @@
             </action>
 
             <!-- Artifactory Configurations -->
-            <action name="existingArtifactoryServer" class="org.jfrog.bamboo.admin.ExistingArtifactoryServerAction"
-                    method="browse">
+            <action name="existingArtifactoryServer" class="org.jfrog.bamboo.admin.ExistingArtifactoryServerAction" method="browse">
                 <result name="success" type="freemarker">/admin/existingArtifactoryServerView.ftl</result>
             </action>
 
-            <action name="configureArtifactoryServer" class="org.jfrog.bamboo.admin.ConfigureArtifactoryServerAction">
+            <action name="configureArtifactoryServer" class="org.jfrog.bamboo.admin.ConfigureArtifactoryServerAction" method="browse">
                 <result name="input" type="freemarker">/admin/configureArtifactoryServer.ftl</result>
                 <result name="success" type="freemarker">/admin/configureArtifactoryServer.ftl</result>
             </action>
@@ -59,21 +58,25 @@
             </action>
 
             <action name="confirmDeleteServer" class="org.jfrog.bamboo.admin.ConfigureArtifactoryServerAction" method="confirm">
-                <result name="success" type="freemarker" >/admin/credentials/confirmDeleteServer.ftl</result>
+                <result name="success" type="freemarker" >/admin/confirmDeleteServer.ftl</result>
+                <result name="input" type="freemarker" >/admin/confirmDeleteServer.ftl</result>
             </action>
 
             <action name="deleteServer" class="org.jfrog.bamboo.admin.ConfigureArtifactoryServerAction" method="delete">
-                <result name="error" type="redirect">/admin/manageArtifactoryServers.ftl</result>
-                <result name="success" type="redirect">/admin/manageArtifactoryServers.ftl</result>
+                <result name="input" type="redirect">/admin/configureArtifactoryServer.ftl</result>
+                <result name="error" type="redirect">/admin/manageArtifactoryServers.action</result>
+                <result name="success" type="redirect">/admin/manageArtifactoryServers.action</result>
             </action>
 
             <!-- Bintray Configurations -->
-            <action name="viewBintray" class="org.jfrog.bamboo.admin.ConfigureBintrayAction" method="default">
+            <action name="viewBintray" class="org.jfrog.bamboo.admin.ConfigureBintrayAction" method="browse">
+                <result name="success" type="freemarker">/admin/viewBintray.ftl</result>
                 <result name="input" type="freemarker">/admin/viewBintray.ftl</result>
                 <result name="error" type="freemarker">/admin/error.ftl</result>
             </action>
 
-            <action name="configureBintray" class="org.jfrog.bamboo.admin.ConfigureBintrayAction" method="default">
+            <action name="configureBintray" class="org.jfrog.bamboo.admin.ConfigureBintrayAction" method="browse">
+                <result name="success" type="freemarker">/admin/configureBintray.ftl</result>
                 <result name="input" type="freemarker">/admin/configureBintray.ftl</result>
                 <result name="error" type="freemarker">/admin/error.ftl</result>
             </action>

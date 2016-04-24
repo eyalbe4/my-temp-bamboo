@@ -14,20 +14,23 @@
 [#assign cancelUri = '/admin/manageArtifactoryServers.action' /]
 
 <div class="paddedClearer"></div>
-[@ww.form action=targetAction submitLabelKey='global.buttons.update'
-titleKey='artifactory.server.details'
-cancelUri=cancelUri
-descriptionKey='artifactory.server.description'
-showActionErrors='true']
-
+[@ww.form action=targetAction
+          titleKey='artifactory.server.details'
+          descriptionKey='artifactory.server.description'
+          submitLabelKey='global.buttons.update'
+          cancelUri='/admin/manageArtifactoryServers.action'
+          showActionErrors='true'
+]
     [@ww.param name='buttons']
-        [@ww.submit value="Test" name="artifactoryTest" theme='simple' /]
+        [@ww.submit value=action.getText('global.buttons.test') name="sendTest" /]
     [/@ww.param]
 
-    [@ww.hidden name='serverId'/]
-    [@ww.textfield labelKey="artifactory.server.url" name="url" required="true"/]
-    [@ww.textfield labelKey='artifactory.server.username' name="username"/]
-    [@ww.password labelKey='artifactory.server.password' name="password" showPassword='true'/]
-    [@ww.textfield labelKey='artifactory.server.timeout' name="timeout" required="true"/]
+    [@ui.bambooSection]
+        [@ww.hidden name='serverId'/]
+        [@ww.textfield labelKey="artifactory.server.url" name="url" required="true" autofocus=true/]
+        [@ww.textfield labelKey='artifactory.server.username' name="username"/]
+        [@ww.password labelKey='artifactory.server.password' name="password" showPassword='true'/]
+        [@ww.textfield labelKey='artifactory.server.timeout' name="timeout" required="true"/]
+    [/@ui.bambooSection]
 [/@ww.form]
 </body>
