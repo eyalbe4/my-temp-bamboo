@@ -46,9 +46,8 @@ public class ArtifactoryConfigServlet extends HttpServlet {
 
     private ServerConfigManager serverConfigManager;
 
-    public ArtifactoryConfigServlet() {
-        serverConfigManager = (ServerConfigManager) ContainerManager.getComponent(
-                ConstantValues.PLUGIN_CONFIG_MANAGER_KEY);
+    public ArtifactoryConfigServlet(ServerConfigManager serverConfigManager) {
+        this.serverConfigManager = serverConfigManager;
     }
 
     /**
@@ -81,7 +80,7 @@ public class ArtifactoryConfigServlet extends HttpServlet {
             resp.sendError(HttpStatus.SC_NOT_FOUND, "Could not find an Artifactory server configuration with the ID " +
                     serverId + ".");
             log.error("Unable to retrieve server configuration. No configuration was found with the ID " + serverId +
-                    ".");
+                     ".");
             return;
         }
 

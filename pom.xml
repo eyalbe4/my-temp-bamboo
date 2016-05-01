@@ -13,7 +13,7 @@
     <packaging>atlassian-plugin</packaging>
 
     <organization>
-        <name>Bamboo Artifactory Plugin</name>
+        <name>JFrog Ltd</name>
         <url>http://www.jfrog.com</url>
     </organization>
 
@@ -31,7 +31,7 @@
     </scm>
 
     <properties>
-        <bamboo.version>5.10.0-m32</bamboo.version>
+        <bamboo.version>5.11.1</bamboo.version>
         <bamboo.data.version>5.10.0</bamboo.data.version>
         <amps.version>6.2.1</amps.version>
         <plugin.testrunner.version>1.2.3</plugin.testrunner.version>
@@ -47,6 +47,23 @@
 
     <dependencies>
         <!-- new -->
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <version>4.0.1.201506240215-r</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.jcraft</groupId>
+                    <artifactId>jsch</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>org.jfrog.buildinfo</groupId>
             <artifactId>build-info-api</artifactId>

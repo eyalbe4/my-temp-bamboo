@@ -1,6 +1,5 @@
 [#-- @ftlvariable name="action" type="org.jfrog.bamboo.admin.ConfigureBintrayAction" --]
 [#-- @ftlvariable name="" type="org.jfrog.bamboo.admin.ConfigureBintrayAction" --]
-[#--[#if bintrayConfig?exists]--]
 <html>
 <head>
     <title>[@ww.text name='config.bintray.title' /]</title>

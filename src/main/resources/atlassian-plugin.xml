@@ -2,21 +2,22 @@
     <plugin-info>
         <description>${project.description}</description>
         <version>${project.version}</version>
-        <vendor name="${project.organization.name}" url="${project.organization.url}" />
         <vendor name="${project.organization.name}" url="${project.organization.url}"/>
-        <param name="plugin-icon">images/pluginIcon.png</param>
-        <param name="plugin-logo">images/pluginLogo.png</param>
+        <param name="vendor-icon">images/artifactory-icon.png</param>
+        <param name="vendor-logo">images/artifactory-icon.png</param>
+        <param name="plugin-icon">images/artifactory-icon.png</param>
+        <param name="plugin-logo">images/artifactory-icon.png</param>
     </plugin-info>
 
-    <!-- add our i18n resource -->
+    <!-- i18n resource -->
     <resource type="i18n" name="i18n" location="i18n"/>
 
+    <!-- Admin Configurations -->
     <component name="Artifactory Server Configuration Management Component" key="artifactoryServerConfigManager"
                class="org.jfrog.bamboo.admin.ServerConfigManager"/>
 
-    <!-- Admin Configurations -->
-    <web-item key="configureArtifactoryPlugin" name="Artifactory Plugin" section="system.admin/plugins" weight="10">
-        <label key="Artifactory Plugin"/>
+    <web-item key="configureArtifactoryPlugin" name="Artifactory Plugin" section="system.admin/plugins" weight="9">
+        <label key="JFrog Artifactory Plugin"/>
         <link linkId="configureArtifactoryPlugin">/admin/manageArtifactoryServers.action</link>
     </web-item>
 
@@ -95,21 +96,250 @@
         <url-pattern>/artifactoryConfigServlet</url-pattern>
     </servlet>
 
-    <!--<servlet name="Artifactory Build Servlet" key="artifactoryBuildServlet"-->
-             <!--class="org.jfrog.bamboo.admin.BuildServlet">-->
-        <!--<url-pattern>/artifactoryBuildServlet</url-pattern>-->
-    <!--</servlet>-->
+    <servlet name="Artifactory Build Servlet" key="artifactoryBuildServlet"
+             class="org.jfrog.bamboo.admin.BuildServlet">
+        <url-pattern>/artifactoryBuildServlet</url-pattern>
+    </servlet>
 
     <servlet name="Artifactory Administration Configuration Servlet" key="artifactoryAdminConfigServlet"
              class="org.jfrog.bamboo.admin.ArtifactoryAdminConfigServlet">
         <url-pattern>/artifactoryAdminConfigServlet</url-pattern>
     </servlet>
 
-    <!--<resource type="download" name="builder/dependencies/" location="META-INF/lib/"/>-->
+    <resource type="download" name="builder/dependencies/" location="META-INF/lib/"/>
+    <resource type="download" name="artifactory-icon.png" location="images/artifactory-icon.png"/>
+    <resource type="download" name="artifactory-release.png" location="images/artifactory-release.png"/>
+    <resource type="download" name="bintray.png" location="images/bintray.png"/>
 
-    <!--<resource type="download" name="artifactory-icon.png" location="images/artifactory-icon.png"/>-->
-    <!--<resource type="download" name="artifactory-release.png" location="images/artifactory-release.png"/>-->
-    <!--<resource type="download" name="bintray.png" location="images/bintray.png"/>-->
+    <!-- T a s k s -->
 
+
+    <!--Generic build deploy task-->
+
+    <taskType key="artifactoryGenericTask" name="Artifactory Generic Deploy"
+              class="org.jfrog.bamboo.task.ArtifactoryGenericDeployTask">
+        <description>Artifactory Generic Deploy Task</description>
+        <configuration class="org.jfrog.bamboo.configuration.ArtifactoryGenericBuildConfiguration"/>
+        <category name="deployment"/>
+        <executable key="generic"/>
+        <resource type="freemarker" name="edit"
+                  location="templates/plugins/generic/artifactoryGenericBuildActionEdit.ftl"/>
+        <resource type="freemarker" name="view"
+                  location="templates/plugins/generic/artifactoryGenericBuildActionView.ftl"/>
+        <resource type="download" name="icon" location="images/artifactory-icon-small.png"/>
+    </taskType>
+
+    <!--Generic build resolve task-->
+    <taskType key="artifactoryGenericResolveTask" name="Artifactory Generic Resolve"
+              class="org.jfrog.bamboo.task.ArtifactoryGenericResolveTask">
+        <description>Artifactory Generic Deploy Task</description>
+        <category name="resolve"/>
+        <executable key="generic"/>
+        <configuration class="org.jfrog.bamboo.configuration.ArtifactoryGenericResolveConfiguration"/>
+        <resource type="freemarker" name="edit"
+                  location="templates/plugins/generic/artifactoryGenericResolveActionEdit.ftl"/>
+        <resource type="freemarker" name="view"
+                  location="templates/plugins/generic/artifactoryGenericResolveActionView.ftl"/>
+        <resource type="download" name="icon" location="images/artifactory-icon-small.png"/>
+    </taskType>
+
+    <!--Gradle task-->
+    <taskType key="artifactoryGradleTask" name="Artifactory Gradle"
+    class="org.jfrog.bamboo.task.ArtifactoryGradleTask">
+    <description>Artifactory Gradle task</description>
+    <configuration class="org.jfrog.bamboo.configuration.ArtifactoryGradleConfiguration"/>
+    <category name="builder"/>
+    <capabilityDefaultsHelper class="org.jfrog.bamboo.capability.GradleCapabilityHelper"/>
+    <runtimeTaskDataProvider class="org.jfrog.bamboo.release.provider.TokenDataProvider"/>
+    <executable key="gradle" pathHelpKey="builder.gradle.pathHelp"/>
+    <resource type="freemarker" name="edit" location="/templates/plugins/task/artifactoryGradleBuilderEdit.ftl"/>
+    <resource type="freemarker" name="view" location="/templates/plugins/task/artifactoryGradleBuilderView.ftl"/>
+    <resource type="download" name="icon" location="images/artifactory-gradle-icon.png"/>
+    </taskType>
+
+    <!-- Build process -->
+
+    <!-- Deploy process -->
+    <taskType key="artifactoryDeploymentTask" name="Artifactory Deployment"
+              class="org.jfrog.bamboo.deployment.ArtifactoryDeploymentTask">
+        <description>Artifactory Deployment Task</description>
+        <configuration class="org.jfrog.bamboo.deployment.ArtifactoryDeploymentConfiguration"/>
+        <category name="deployment"/>
+        <executable key="deployment"/>
+        <resource type="freemarker" name="edit"
+                  location="/templates/plugins/deployment/artifactoryDeploymentActionEdit.ftl"/>
+        <resource type="freemarker" name="view"
+                  location="/templates/plugins/deployment/artifactoryDeploymentActionView.ftl"/>
+        <resource type="download" name="icon" location="images/artifactory-icon-small.png"/>
+    </taskType>
+
+
+
+    <!-- Not Filtered yet-->
+    <!--build info-->
+    <!--<xwork key="buildInfoAction" name="Artifactory Release Promotion">-->
+        <!--<package name="artifactoryReleasePlugin" extends="buildView">-->
+            <!--<action name="buildInfoAction" class="org.jfrog.bamboo.buildinfo.action.BuildInfoAction">-->
+                <!--&lt;!&ndash; This line is checked for completeness (i.e. no line wrapping. it breaks the descriptor).-->
+                <!--If changing anything here, remember to modify the PluginDescriptorValidityTest &ndash;&gt;-->
+                <!--<result name="input" type="freemarker">templates/plugins/result/buildInfoAction.ftl</result>-->
+                <!--<result name="error" type="freemarker">templates/plugins/result/buildInfoAction.ftl</result>-->
+            <!--</action>-->
+        <!--</package>-->
+    <!--</xwork>-->
+
+    <!--<web-item key="buildInfoAction:${buildKey}-${buildNumber}"-->
+              <!--name="View Artifactory Build Info Result Summary" section="results.subMenu/results" weight="20">-->
+        <!--<label key="Artifactory Build Info"/>-->
+        <!--<link linkId="buildInfoAction:${buildKey}-${buildNumber}">/build/buildInfoAction.action?buildKey=${buildKey}&amp;buildNumber=${buildNumber}</link>-->
+        <!--<condition class="org.jfrog.bamboo.buildinfo.action.condition.BuildInfoActionCondition"/>-->
+    <!--</web-item>-->
+
+    <!--release management and promote-->
+    <web-resource key="releaseCSS" name="releaseCSS">
+        <resource type="download" name="release.css" location="release.css"/>
+    </web-resource>
+
+    <!--<web-item key="brmpTab:${buildKey}-${buildNumber}" name="Artifactory Pro Release Staging"-->
+              <!--section="results.subMenu/results" weight="130">-->
+        <!--<label key="Artifactory Release &amp; Promotion"/>-->
+        <!--<link linkId="brmpTab:${buildKey}-${buildNumber}">/build/releaseAndPromotionAction.action?buildKey=${buildKey}&amp;buildNumber=${buildNumber}</link>-->
+        <!--<condition class="org.jfrog.bamboo.release.action.condition.ReleaseAndPromotionActionCondition"/>-->
+    <!--</web-item>-->
+
+    <!--<web-item key="brmpTab:pushToBintray-${buildKey}-${buildNumber}" name="Push to Bintray"-->
+              <!--section="results.subMenu/results" weight="140">-->
+        <!--<description key="Push To Bintray">Push to Bintray</description>-->
+        <!--<label key="Push to Bintray"/>-->
+        <!--<link linkId="pushToBintray">/build/pushToBintray.action?buildKey=${buildKey}&amp;buildNumber=${buildNumber}-->
+        <!--</link>-->
+    <!--</web-item>-->
+
+    <!--<xwork key="brmpAdminActions" name="Release Management Admin Actions">-->
+
+        <!--<package name="brmpResults" extends="buildView">-->
+            <!--<action name="releaseAndPromotionAction" class="org.jfrog.bamboo.release.action.ReleaseAndPromotionAction">-->
+                <!--<result name="input" type="freemarker">/templates/plugins/release/releaseAndPromotionAction.ftl</result>-->
+                <!--<result name="error" type="freemarker">/error.ftl</result>-->
+            <!--</action>-->
+
+            <!--<action name="pushToBintray" class="org.jfrog.bamboo.bintray.PushToBintrayAction">-->
+                <!--<result name="input" type="freemarker">/templates/plugins/bintray/pushToBintrayAction.ftl</result>-->
+                <!--<result name="error" type="freemarker">/error.ftl</result>-->
+            <!--</action>-->
+
+            <!--<action name="getPushToBintrayLog" class="org.jfrog.bamboo.bintray.PushToBintrayAction"-->
+                    <!--method="getPushToBintrayLog">-->
+                <!--<result name="success" type="freemarker">/templates/plugins/bintray/pushToBintrayLog.ftl</result>-->
+                <!--<result name="input" type="freemarker">/templates/plugins/bintray/pushToBintrayLog.ftl</result>-->
+            <!--</action>-->
+
+            <!--<action name="push" class="org.jfrog.bamboo.bintray.PushToBintrayAction" method="push">-->
+                <!--<result name="success" type="freemarker">/templates/plugins/bintray/pushToBintrayAction.ftl</result>-->
+                <!--<result name="error" type="freemarker">/templates/plugins/bintray/pushToBintrayAction.ftl</result>-->
+            <!--</action>-->
+
+            <!--<action name="promote" class="org.jfrog.bamboo.release.action.ReleaseAndPromotionAction" method="promote">-->
+                <!--&lt;!&ndash; This line is checked for completeness (i.e. no line wrapping. it breaks the descriptor).-->
+                <!--If changing anything here, remember to modify the PluginDescriptorValidityTest &ndash;&gt;-->
+                <!--<result name="success" type="freemarker">/templates/plugins/release/releaseAndPromotionAction.ftl</result>-->
+                <!--<result name="input" type="redirect">/build/releaseAndPromotionAction.action?buildKey=${buildKey}&amp;buildNumber=${buildNumber}</result>-->
+                <!--<result name="error" type="freemarker">/templates/plugins/release/releaseAndPromotionAction.ftl</result>-->
+            <!--</action>-->
+
+            <!--<action name="getLog" class="org.jfrog.bamboo.release.action.ReleaseAndPromotionAction" method="getLog">-->
+                <!--<result name="success" type="freemarker">/templates/plugins/release/promotionLog.ftl</result>-->
+                <!--<result name="input" type="freemarker">/templates/plugins/release/promotionLog.ftl</result>-->
+            <!--</action>-->
+
+            <!--<action name="releaseBuild" class="org.jfrog.bamboo.release.action.ReleaseAndPromotionAction"-->
+                    <!--method="releaseBuild">-->
+                <!--<result name="success" type="redirect">/browse/${buildKey}/log</result>-->
+            <!--</action>-->
+        <!--</package>-->
+    <!--</xwork>-->
+
+
+
+    <!--<taskType key="artifactoryIvyTask" name="Artifactory Ivy"-->
+              <!--class="org.jfrog.bamboo.task.ArtifactoryIvyTask">-->
+        <!--<description>Artifactory Ivy task</description>-->
+        <!--<configuration class="org.jfrog.bamboo.configuration.ArtifactoryIvyConfiguration"/>-->
+        <!--<category name="builder"/>-->
+        <!--<capabilityDefaultsHelper class="org.jfrog.bamboo.capability.IvyCapabilityHelper"/>-->
+        <!--<executable key="ivy" pathHelpKey="builder.ivy.pathHelp"/>-->
+        <!--<resource type="freemarker" name="edit" location="/templates/plugins/task/artifactoryIvyBuilderEdit.ftl"/>-->
+        <!--<resource type="freemarker" name="view" location="/templates/plugins/task/artifactoryIvyBuilderView.ftl"/>-->
+        <!--<resource type="download" name="icon" location="images/artifactory-ivy-icon.png"/>-->
+    <!--</taskType>-->
+
+    <!--<taskType key="maven3Task" name="Artifactory Maven 3"-->
+              <!--class="org.jfrog.bamboo.task.ArtifactoryMaven3Task">-->
+        <!--<description>Artifactory Maven 3 Task</description>-->
+        <!--<configuration class="org.jfrog.bamboo.configuration.ArtifactoryMaven3Configuration"/>-->
+        <!--<category name="builder"/>-->
+        <!--<capabilityDefaultsHelper class="org.jfrog.bamboo.capability.Maven3CapabilityHelper"/>-->
+        <!--<runtimeTaskDataProvider class="org.jfrog.bamboo.release.provider.TokenDataProvider"/>-->
+        <!--<executable key="maven" pathHelpKey="builder.maven.pathHelp"/>-->
+        <!--<resource type="freemarker" name="edit" location="/templates/plugins/task/artifactoryMaven3BuilderEdit.ftl"/>-->
+        <!--<resource type="freemarker" name="view" location="/templates/plugins/task/artifactoryMaven3BuilderView.ftl"/>-->
+        <!--<resource type="download" name="icon" location="images/artifactory-maven-icon.png"/>-->
+    <!--</taskType>-->
+
+    <!--<builder2TaskConverter key="ArtifactoryMavenConverter" name="Artifactory Maven Builder Converter"-->
+                           <!--class="org.jfrog.bamboo.converter.MavenBuilder2TaskConverter">-->
+        <!--<description>A configuration converter for Maven builders</description>-->
+        <!--<builderKeyPattern>${groupId}.${artifactId}:artifactoryMaven3Builder</builderKeyPattern>-->
+    <!--</builder2TaskConverter>-->
+
+    <!--<builder2TaskConverter key="ArtifactoryGradleConverter" name="Artifactory Gradle Builder Converter"-->
+                           <!--class="org.jfrog.bamboo.converter.GradleBuilder2TaskConverter">-->
+        <!--<description>A configuration converter for Gradle builders</description>-->
+        <!--<builderKeyPattern>${groupId}.${artifactId}:artifactoryGradleBuilder</builderKeyPattern>-->
+    <!--</builder2TaskConverter>-->
+
+    <!--<builder2TaskConverter key="ArtifactoryIvyConverter" name="Artifactory Ivy Builder Converter"-->
+                           <!--class="org.jfrog.bamboo.converter.IvyBuilder2TaskConverter">-->
+        <!--<description>A configuration converter for Ivy builders</description>-->
+        <!--<builderKeyPattern>${groupId}.${artifactId}:artifactoryIvyBuilder</builderKeyPattern>-->
+    <!--</builder2TaskConverter>-->
+
+    <!--<buildProcessor key="artifactoryChainCompleteAction" name="Artifactory Release Management Staging"-->
+                    <!--class="org.jfrog.bamboo.release.action.ArtifactoryPostBuildCompleteAction">-->
+        <!--<skipIfFailed>false</skipIfFailed>-->
+        <!--<description>Post build processor for Artifactory Release.</description>-->
+    <!--</buildProcessor>-->
+
+    <buildProcessor key="artifactoryBuildInfoCopier" name="Artifactory Build Info Copier"
+                    class="org.jfrog.bamboo.processor.BuildInfoCopier">
+        <skipIfFailed>true</skipIfFailed>
+        <description>Post build processor to copy build info to artifact storage.</description>
+    </buildProcessor>
+
+    <buildProcessor key="artifactoryGradlePropertiesCopier" name="Artifactory Gradle Properties Info Copier"
+                    class="org.jfrog.bamboo.processor.GradlePropertiesCopier">
+        <skipIfFailed>true</skipIfFailed>
+        <description>Post build processor to copy gradle properties to artifact storage.</description>
+    </buildProcessor>
+
+    <!--<additionalBuildConfigurationPlugin key="releasePlanConfiguration" name="Release Management Configuration"-->
+                                        <!--class="org.jfrog.bamboo.release.configuration.ReleaseManagementConfigurator">-->
+        <!--<description>Plugin to allow custom configuration of release management per plan</description>-->
+        <!--<resource type="freemarker" name="edit" location="/templates/releaseEdit.ftl"/>-->
+        <!--<resource type="freemarker" name="view" location="/templates/brmpView.ftl"/>-->
+    <!--</additionalBuildConfigurationPlugin>-->
+
+    <!--<preBuildAction key="artifactoryPreBuildAction" name="Artifactory Release Staging"-->
+                    <!--class="org.jfrog.bamboo.release.action.ArtifactoryPreBuildAction">-->
+        <!--<description>A custom action that reads the identifier of a source repository version and stores it into the-->
+            <!--custom data map of a build.-->
+        <!--</description>-->
+    <!--</preBuildAction>-->
+
+
+
+    <component-import key="taskContextHelper" interface="com.atlassian.bamboo.task.TaskContextHelperService"/>
+    <component-import key="taskConfiguratorHelper" interface="com.atlassian.bamboo.task.TaskConfiguratorHelper"/>
+    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
 
 </atlassian-plugin>

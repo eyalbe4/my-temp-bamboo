@@ -5,8 +5,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
-//import org.jfrog.bamboo.bintray.PushToBintrayContext;
-//import org.jfrog.bamboo.release.action.ModuleVersionHolder;
+import org.jfrog.bamboo.bintray.PushToBintrayContext;
+import org.jfrog.bamboo.release.action.ModuleVersionHolder;
 import org.jfrog.bamboo.util.BeanUtilsHelper;
 import org.jfrog.build.api.BlackDuckProperties;
 import org.jfrog.build.api.BlackDuckPropertiesFields;
@@ -75,16 +75,16 @@ public abstract class AbstractBuildContext {
     public static final String BLACKDUCK_PREFIX = "artifactory.common.blackduck.";
 
     public final ReleaseManagementContext releaseManagementContext = new ReleaseManagementContext();
-//    public final PushToBintrayContext pushToBintrayContext = new PushToBintrayContext();
-//    public final BlackDuckProperties blackDuckProperties;
+    public final PushToBintrayContext pushToBintrayContext = new PushToBintrayContext();
+    public final BlackDuckProperties blackDuckProperties;
     private final String prefix;
     protected final Map<String, String> env;
 
     public AbstractBuildContext(String prefix, Map<String, String> env) {
         this.prefix = prefix;
         this.env = env;
-//        BeanUtilsHelper.populateWithPrefix(blackDuckProperties = new BlackDuckProperties(), env,
-//                AbstractBuildContext.BLACKDUCK_PREFIX);
+        BeanUtilsHelper.populateWithPrefix(blackDuckProperties = new BlackDuckProperties(), env,
+                AbstractBuildContext.BLACKDUCK_PREFIX);
     }
 
     public static AbstractBuildContext createContextFromMap(Map<String, String> map) {
@@ -95,11 +95,11 @@ public abstract class AbstractBuildContext {
         if (StringUtils.isBlank(value)) {
             return null;
         }
-//        if (StringUtils.startsWith(value, GradleBuildContext.PREFIX)) {
-//            return new GradleBuildContext(sanitizeEntries(map));
-//        } else if (StringUtils.startsWith(value, Maven3BuildContext.PREFIX)) {
-//            return new Maven3BuildContext(sanitizeEntries(map));
-//        }
+        if (StringUtils.startsWith(value, GradleBuildContext.PREFIX)) {
+            return new GradleBuildContext(sanitizeEntries(map));
+        } else if (StringUtils.startsWith(value, Maven3BuildContext.PREFIX)) {
+            return new Maven3BuildContext(sanitizeEntries(map));
+        }
         return null;
     }
 
@@ -337,40 +337,40 @@ public abstract class AbstractBuildContext {
             return env.get(NEXT_DEVELOPMENT_COMMENT);
         }
 
-//        public List<ModuleVersionHolder> filterPropsForRelease(Map<String, String> props) {
-//            List<ModuleVersionHolder> result = Lists.newArrayList();
-//            String releaseProps = env.get(prefix + RELEASE_PROPS);
-//            if (StringUtils.isNotBlank(releaseProps)) {
-//                List<String> split = Lists.newArrayList(splitAndTrim(releaseProps));
-//                for (Map.Entry<String, String> entry : props.entrySet()) {
-//                    if (Iterables.contains(split, entry.getKey())) {
-//                        result.add(new ModuleVersionHolder(entry.getKey(), entry.getValue(), true));
-//                    }
-//                }
-//            }
-//            String nextIntegProps = env.get(prefix + NEXT_INTEG_PROPS);
-//            if (StringUtils.isNotBlank(nextIntegProps)) {
-//                List<String> split = Lists.newArrayList(splitAndTrim(nextIntegProps));
-//                for (Map.Entry<String, String> entry : props.entrySet()) {
-//                    final String propertyKey = entry.getKey();
-//                    if (Iterables.contains(split, propertyKey)) {
-//                        ModuleVersionHolder existingReleaseProp;
-//                        try {
-//                            existingReleaseProp = Iterables.find(result, new Predicate<ModuleVersionHolder>() {
+        public List<ModuleVersionHolder> filterPropsForRelease(Map<String, String> props) {
+            List<ModuleVersionHolder> result = Lists.newArrayList();
+            String releaseProps = env.get(prefix + RELEASE_PROPS);
+            if (StringUtils.isNotBlank(releaseProps)) {
+                List<String> split = Lists.newArrayList(splitAndTrim(releaseProps));
+                for (Map.Entry<String, String> entry : props.entrySet()) {
+                    if (Iterables.contains(split, entry.getKey())) {
+                        result.add(new ModuleVersionHolder(entry.getKey(), entry.getValue(), true));
+                    }
+                }
+            }
+            String nextIntegProps = env.get(prefix + NEXT_INTEG_PROPS);
+            if (StringUtils.isNotBlank(nextIntegProps)) {
+                List<String> split = Lists.newArrayList(splitAndTrim(nextIntegProps));
+                for (Map.Entry<String, String> entry : props.entrySet()) {
+                    final String propertyKey = entry.getKey();
+                    if (Iterables.contains(split, propertyKey)) {
+                        ModuleVersionHolder existingReleaseProp;
+                        try {
+                            existingReleaseProp = Iterables.find(result, new Predicate<ModuleVersionHolder>() {
 //                                @Override
-//                                public boolean apply(ModuleVersionHolder holder) {
-//                                    return (holder != null) && holder.getKey().equals(propertyKey);
-//                                }
-//                            });
-//                            existingReleaseProp.setReleaseProp(false);
-//                        } catch (NoSuchElementException e) {
-//                            result.add(new ModuleVersionHolder(propertyKey, entry.getValue(), false));
-//                        }
-//                    }
-//                }
-//            }
-//            return result;
-//        }
+                                public boolean apply(ModuleVersionHolder holder) {
+                                    return (holder != null) && holder.getKey().equals(propertyKey);
+                                }
+                            });
+                            existingReleaseProp.setReleaseProp(false);
+                        } catch (NoSuchElementException e) {
+                            result.add(new ModuleVersionHolder(propertyKey, entry.getValue(), false));
+                        }
+                    }
+                }
+            }
+            return result;
+        }
 
         public boolean isReleaseMgmtEnabled() {
             return Boolean.parseBoolean(env.get(ENABLE_RELEASE_MANAGEMENT));

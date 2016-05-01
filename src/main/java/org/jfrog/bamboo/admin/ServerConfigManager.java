@@ -22,6 +22,7 @@ import com.atlassian.bamboo.security.EncryptionService;
 import com.atlassian.bamboo.spring.ComponentAccessor;
 import com.atlassian.bamboo.variable.CustomVariableContext;
 import com.atlassian.bandana.BandanaManager;
+import com.atlassian.spring.container.ContainerManager;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -60,6 +61,9 @@ public class ServerConfigManager implements Serializable {
         setBandanaManager( bandanaManager );
     }
 
+    public ServerConfigManager() {
+    }
+
     public List<ServerConfig> getAllServerConfigs() {
         return Lists.newArrayList(configuredServers);
     }
@@ -72,6 +76,12 @@ public class ServerConfigManager implements Serializable {
         }
 
         return null;
+    }
+
+    public static ServerConfigManager getInstance() {
+        ServerConfigManager serverConfigManager = new ServerConfigManager();
+//        ContainerManager.autowireComponent(serverConfigManager);
+        return serverConfigManager;
     }
 
     public void addServerConfiguration(ServerConfig serverConfig) {
