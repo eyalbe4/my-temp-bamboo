@@ -19,11 +19,12 @@ package org.jfrog.bamboo.admin;
 import com.atlassian.bamboo.ww2.BambooActionSupport;
 import com.atlassian.bamboo.ww2.aware.permissions.GlobalAdminSecurityAware;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jfrog.bamboo.util.BambooBuildInfoLog;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
 import org.jfrog.build.util.VersionException;
+import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,7 +36,7 @@ import java.net.URL;
  */
 public class ConfigureArtifactoryServerAction extends BambooActionSupport implements GlobalAdminSecurityAware {
 
-    private transient Logger log = Logger.getLogger(ConfigureArtifactoryServerAction.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ConfigureArtifactoryServerAction.class);
 
     private String mode;
     private long serverId;

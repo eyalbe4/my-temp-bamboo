@@ -5,13 +5,14 @@ import com.atlassian.spring.container.ContainerManager;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jfrog.bamboo.admin.ServerConfig;
 import org.jfrog.bamboo.admin.ServerConfigManager;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.util.ConstantValues;
 import org.jfrog.bamboo.util.TaskUtils;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.NoSuchElementException;
  */
 public class MavenSyncUtils {
 
-    private static final Logger log = Logger.getLogger(MavenSyncUtils.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(MavenSyncUtils.class);
     private static final String NEXUS_PUSH_PLUGIN_NAME = "bintrayOsoPush";
 
     public static boolean isPushToNexusEnabled(ServerConfigManager serverConfigManager, TaskDefinition definition,
@@ -53,7 +54,7 @@ public class MavenSyncUtils {
             }
             List<Map> executionPlugins = userPluginInfo.get("promotions");
             Iterables.find(executionPlugins, new Predicate<Map>() {
-                @Override
+//                @Override
                 public boolean apply(Map pluginInfo) {
                     if ((pluginInfo != null) && pluginInfo.containsKey("name")) {
                         String pluginName = pluginInfo.get("name").toString();

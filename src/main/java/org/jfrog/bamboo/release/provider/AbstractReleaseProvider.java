@@ -9,7 +9,7 @@ import com.atlassian.bamboo.v2.build.BuildContext;
 import com.atlassian.bamboo.v2.build.CurrentBuildResult;
 import com.atlassian.bamboo.variable.CustomVariableContext;
 import com.google.common.collect.Maps;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.Nullable;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.context.GradleBuildContext;
@@ -29,7 +29,7 @@ import java.util.Map;
  * @author Tomer Cohen
  */
 public abstract class AbstractReleaseProvider implements ReleaseProvider {
-    private static final Logger log = Logger.getLogger(AbstractReleaseProvider.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(AbstractReleaseProvider.class);
 
     private boolean isReleaseEnabled;
     protected ScmCoordinator coordinator;

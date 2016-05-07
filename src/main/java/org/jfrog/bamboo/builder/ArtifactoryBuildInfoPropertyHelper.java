@@ -25,7 +25,7 @@ import com.atlassian.bamboo.v2.build.trigger.ManualBuildTriggerReason;
 import com.atlassian.bamboo.v2.build.trigger.TriggerReason;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.jfrog.bamboo.admin.ServerConfig;
 import org.jfrog.bamboo.configuration.BuildParamsOverrideManager;
 import org.jfrog.bamboo.context.AbstractBuildContext;
@@ -47,7 +47,7 @@ import static org.jfrog.bamboo.util.ConstantValues.*;
  */
 public abstract class ArtifactoryBuildInfoPropertyHelper extends BaseBuildInfoHelper {
 
-    private static final Logger log = Logger.getLogger(ArtifactoryBuildInfoPropertyHelper.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ArtifactoryBuildInfoPropertyHelper.class);
 
     public String createFileAndGetPath(AbstractBuildContext buildContext,
                                        BuildLogger logger, Map<String, String> taskEnv, Map<String, String> generalEnv,

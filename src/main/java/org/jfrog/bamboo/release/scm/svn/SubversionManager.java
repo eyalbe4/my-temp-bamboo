@@ -6,7 +6,7 @@ import com.atlassian.bamboo.repository.RepositoryException;
 import com.atlassian.bamboo.repository.svn.SvnRepository;
 import com.atlassian.bamboo.v2.build.BuildContext;
 import com.atlassian.bamboo.variable.CustomVariableContext;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.jfrog.bamboo.release.scm.AbstractScmManager;
 import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.wc.*;
@@ -18,7 +18,7 @@ import java.io.IOException;
  * @author Tomer Cohen
  */
 public class SubversionManager extends AbstractScmManager<SvnRepository> {
-    private static final Logger log = Logger.getLogger(SubversionManager.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(SubversionManager.class);
 
     private SVNClientManager manager;
     private final BuildLogger buildLogger;

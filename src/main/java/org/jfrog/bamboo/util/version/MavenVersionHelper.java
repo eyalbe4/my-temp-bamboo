@@ -8,7 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Closeables;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.release.action.ModuleVersionHolder;
 import org.jfrog.bamboo.release.action.ReleaseAndPromotionAction;
@@ -29,7 +29,7 @@ import java.util.zip.GZIPInputStream;
  * @author Tomer Cohen
  */
 public class MavenVersionHelper extends VersionHelper {
-    private static final Logger log = Logger.getLogger(MavenVersionHelper.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(MavenVersionHelper.class);
 
     private final CapabilityContext capabilityContext;
 

@@ -17,7 +17,7 @@ import com.jcraft.jsch.Session;
 import com.opensymphony.xwork.TextProvider;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -43,7 +43,7 @@ import java.util.Arrays;
  * @author Tomer Cohen
  */
 public class GitManager extends AbstractScmManager<AbstractRepository> {
-    private static final Logger log = Logger.getLogger(GitManager.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(GitManager.class);
     private static final String REF_PREFIX = "refs/heads/";
     private static final String REFS_TAGS = "refs/tags/";
 

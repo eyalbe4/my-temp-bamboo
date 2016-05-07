@@ -25,10 +25,13 @@ import com.atlassian.bandana.BandanaManager;
 import com.atlassian.spring.container.ContainerManager;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
+//import org.jfrog.bamboo.util.BambooBuildInfoLog;
 import org.jfrog.bamboo.util.BambooBuildInfoLog;
 import org.jfrog.bamboo.util.TaskUtils;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +48,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class ServerConfigManager implements Serializable {
 
-    private transient Logger log = Logger.getLogger(ServerConfigManager.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ServerConfigManager.class);
 
     private static final String ARTIFACTORY_CONFIG_KEY = "org.jfrog.bamboo.server.configurations";
     private static final String BINTRAY_CONFIG_KEY = "org.jfrog.bamboo.bintray.configurations";

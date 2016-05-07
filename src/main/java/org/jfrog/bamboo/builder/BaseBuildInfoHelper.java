@@ -50,7 +50,7 @@ import static org.jfrog.bamboo.util.ConstantValues.BUILD_SERVLET_KEY_PARAM;
  */
 public abstract class BaseBuildInfoHelper {
     @SuppressWarnings({"UnusedDeclaration"})
-    private static final Logger log = LoggerFactory.getLogger(BaseBuildInfoHelper.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(BaseBuildInfoHelper.class);
 
     protected BuildContext context;
     protected ServerConfigManager serverConfigManager;

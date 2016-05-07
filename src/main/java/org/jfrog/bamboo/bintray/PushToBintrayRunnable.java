@@ -2,7 +2,7 @@ package org.jfrog.bamboo.bintray;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jfrog.bamboo.admin.ServerConfig;
 import org.jfrog.bamboo.bintray.client.BintrayClient;
 import org.jfrog.bamboo.util.ActionLog;
@@ -11,6 +11,7 @@ import org.jfrog.build.api.release.BintrayUploadInfoOverride;
 import org.jfrog.build.client.ArtifactoryVersion;
 import org.jfrog.build.client.bintrayResponse.BintrayResponse;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ import java.util.Map;
 public class PushToBintrayRunnable implements Runnable {
 
     private static final String MINIMAL_SUPPORTED_VERSION = "3.6";
-    private Logger log = Logger.getLogger(PushToBintrayRunnable.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(PushToBintrayRunnable.class);
 
     private BintrayClient bintrayClient;
     private ServerConfig serverConfig;

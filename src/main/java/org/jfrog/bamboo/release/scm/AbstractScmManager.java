@@ -3,7 +3,7 @@ package org.jfrog.bamboo.release.scm;
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.repository.Repository;
 import com.atlassian.bamboo.v2.build.BuildContext;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.Nullable;
 import org.jfrog.bamboo.util.version.ScmHelper;
 
@@ -13,7 +13,7 @@ import java.io.File;
  * @author Tomer Cohen
  */
 public abstract class AbstractScmManager<T extends Repository> implements ScmManager {
-    private static final Logger log = Logger.getLogger(AbstractScmManager.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(AbstractScmManager.class);
 
     public static final String COMMENT_PREFIX = "[artifactory-release] ";
     private BuildContext context;

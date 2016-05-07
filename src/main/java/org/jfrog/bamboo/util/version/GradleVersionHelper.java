@@ -35,6 +35,7 @@ public class GradleVersionHelper extends VersionHelper {
         List<ModuleVersionHolder> result = Lists.newArrayList();
 //        File directory = SystemDirectory.getArtifactStorage().getArtifactDirectory(plan, latestBuildNumberWithBi);
 // TODO: Find other method output should be folder "C:\Users\DimaN\Bamboo-home\artifacts\MAV-MAV\JOB1\build-00069"
+// TODO: environmentVariableAccessor.getEnvironment(taskContext).get("bamboo_build_working_directory")
         File directory = new File("c://deleteme/");
         File gradlePropertiesFile = new File(directory, "gradle/gradle.properties");
         if (gradlePropertiesFile.exists()) {

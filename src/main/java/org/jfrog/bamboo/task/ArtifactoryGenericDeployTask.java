@@ -15,7 +15,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jfrog.bamboo.admin.ServerConfig;
 import org.jfrog.bamboo.admin.ServerConfigManager;
@@ -31,6 +31,8 @@ import org.jfrog.build.client.DeployDetails;
 import org.jfrog.build.extractor.BuildInfoExtractorUtils;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
 import org.jfrog.build.extractor.clientConfiguration.util.PublishedItemsHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +48,7 @@ import static org.jfrog.bamboo.util.ConstantValues.BUILD_RESULT_SELECTED_SERVER_
  */
 public class ArtifactoryGenericDeployTask implements TaskType {
     public static final String TASK_NAME = "artifactoryGenericTask";
-    private static final Logger log = Logger.getLogger(ArtifactoryGenericDeployTask.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ArtifactoryGenericDeployTask.class);
     private final EnvironmentVariableAccessor environmentVariableAccessor;
     private PluginAccessor pluginAccessor;
     private BuildLogger logger;

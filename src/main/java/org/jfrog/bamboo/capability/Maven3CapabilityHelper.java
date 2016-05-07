@@ -9,7 +9,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.apache.tools.ant.taskdefs.Execute;
 import org.apache.tools.ant.taskdefs.ExecuteWatchdog;
 import org.apache.tools.ant.types.Commandline;
@@ -23,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Maven3CapabilityHelper extends AbstractHomeDirectoryCapabilityDefaultsHelper {
-    private static final Logger log = Logger.getLogger(Maven3CapabilityHelper.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(Maven3CapabilityHelper.class);
     private static final String MAVEN3_HOME_POSIX = "/usr/share/maven3/";
     private static final Pattern MAVEN_VERSION_3 = Pattern.compile("3\\.\\d+\\.\\d+");
     private static final String M2_EXECUTABLE_NAME = "mvn";
@@ -67,7 +67,7 @@ public class Maven3CapabilityHelper extends AbstractHomeDirectoryCapabilityDefau
             this.pattern = pattern;
         }
 
-        @Override
+//        @Override
         public boolean apply(@Nullable final File input) {
             if (input == null) {
                 return false;

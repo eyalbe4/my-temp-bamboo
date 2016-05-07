@@ -1,6 +1,7 @@
 package org.jfrog.bamboo.configuration;
 
 import com.atlassian.bamboo.configuration.AdministrationConfigurationAccessor;
+import com.atlassian.bamboo.task.TaskConfiguratorHelper;
 import com.atlassian.bamboo.utils.EscapeChars;
 import com.atlassian.spring.container.ContainerManager;
 import com.google.common.collect.Maps;

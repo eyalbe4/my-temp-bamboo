@@ -22,8 +22,9 @@ import com.atlassian.spring.container.ContainerManager;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jfrog.bamboo.util.ConstantValues;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,7 +40,7 @@ import java.io.PrintWriter;
  */
 public class BuildServlet extends HttpServlet {
 
-    private Logger log = Logger.getLogger(BuildServlet.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(BuildServlet.class);
 
     private PlanManager planManager;
 

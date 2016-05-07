@@ -16,7 +16,7 @@
 
 package org.jfrog.bamboo.util;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jfrog.build.api.util.Log;
 
 /**

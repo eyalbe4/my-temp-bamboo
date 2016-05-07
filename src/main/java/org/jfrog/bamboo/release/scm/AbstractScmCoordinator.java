@@ -8,7 +8,7 @@ import com.atlassian.bamboo.repository.svn.SvnRepository;
 import com.atlassian.bamboo.v2.build.BuildContext;
 import com.atlassian.bamboo.variable.CustomVariableContext;
 import com.google.common.collect.Maps;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.jfrog.bamboo.release.scm.git.GitCoordinator;
 import org.jfrog.bamboo.release.scm.perforce.PerforceCoordinator;
 import org.jfrog.bamboo.release.scm.svn.SubversionCoordinator;
@@ -24,7 +24,7 @@ import java.util.Map;
  * @author Tomer Cohen
  */
 public abstract class AbstractScmCoordinator implements ScmCoordinator {
-    private static final Logger log = Logger.getLogger(AbstractScmCoordinator.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(AbstractScmCoordinator.class);
     protected final Repository repository;
     protected final BuildLogger buildLogger;
     protected final CustomVariableContext customVariableContext;

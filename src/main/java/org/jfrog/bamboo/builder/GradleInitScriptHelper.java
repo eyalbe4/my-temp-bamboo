@@ -55,7 +55,7 @@ import static org.jfrog.bamboo.util.ConstantValues.*;
 public class GradleInitScriptHelper extends BaseBuildInfoHelper {
 
     @SuppressWarnings({"UnusedDeclaration"})
-    private static final Logger log = LoggerFactory.getLogger(GradleInitScriptHelper.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(GradleInitScriptHelper.class);
 
     public ConfigurationPathHolder createAndGetGradleInitScriptPath(String dependenciesDir,
                                                                     GradleBuildContext buildContext, BuildLogger logger, String scriptTemplate,

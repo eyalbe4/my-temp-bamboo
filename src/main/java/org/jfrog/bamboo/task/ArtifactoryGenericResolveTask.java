@@ -4,7 +4,7 @@ import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.task.*;
 import com.atlassian.bamboo.variable.CustomVariableContext;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jfrog.bamboo.admin.ServerConfig;
 import org.jfrog.bamboo.admin.ServerConfigManager;
@@ -18,6 +18,7 @@ import org.jfrog.build.api.Dependency;
 import org.jfrog.build.api.dependency.BuildDependency;
 import org.jfrog.build.extractor.BuildInfoExtractorUtils;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryDependenciesClient;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 public class ArtifactoryGenericResolveTask implements TaskType {
 
-    private static final Logger log = Logger.getLogger(ArtifactoryGenericResolveTask.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ArtifactoryGenericResolveTask.class);
 
     private BuildLogger logger;
     private BuildParamsOverrideManager buildParamsOverrideManager;

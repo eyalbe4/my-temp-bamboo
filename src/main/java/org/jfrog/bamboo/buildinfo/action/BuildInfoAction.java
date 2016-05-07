@@ -2,7 +2,7 @@ package org.jfrog.bamboo.buildinfo.action;
 
 import com.atlassian.bamboo.build.ViewBuildResults;
 import com.atlassian.bamboo.resultsummary.ResultsSummary;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.jfrog.bamboo.util.ConstantValues;
 
 /**
@@ -12,7 +12,7 @@ import org.jfrog.bamboo.util.ConstantValues;
  * @author Tomer Cohen
  */
 public class BuildInfoAction extends ViewBuildResults {
-    transient Logger log = Logger.getLogger(BuildInfoAction.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(BuildInfoAction.class);
     private String artifactoryReleaseManagementUrl = "";
 
     @Override

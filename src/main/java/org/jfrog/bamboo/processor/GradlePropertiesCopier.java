@@ -13,7 +13,7 @@ import com.atlassian.bamboo.v2.build.BuildContext;
 import com.atlassian.bamboo.v2.build.task.AbstractBuildTask;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.context.GradleBuildContext;
@@ -35,7 +35,7 @@ import java.util.Map;
  * @author Tomer Cohen
  */
 public class GradlePropertiesCopier extends AbstractBuildTask implements CustomBuildProcessor {
-    private static final Logger log = Logger.getLogger(GradlePropertiesCopier.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(GradlePropertiesCopier.class);
 
     private volatile ArtifactManager artifactManager;
     private BuildLoggerManager buildLoggerManager;

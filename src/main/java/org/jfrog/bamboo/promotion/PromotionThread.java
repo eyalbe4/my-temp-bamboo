@@ -11,7 +11,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
@@ -39,7 +39,7 @@ import static org.jfrog.bamboo.release.action.ReleaseAndPromotionAction.*;
 public class PromotionThread extends Thread {
 
     public static final String NEXUS_PUSH_PROPERTY_PREFIX = "bintrayOsoPush.";
-    transient Logger log = Logger.getLogger(PromotionThread.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(PromotionThread.class);
 
     private ReleaseAndPromotionAction action;
     private ArtifactoryBuildInfoClient client;

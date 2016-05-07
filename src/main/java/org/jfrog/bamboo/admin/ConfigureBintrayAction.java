@@ -3,7 +3,7 @@ package org.jfrog.bamboo.admin;
 import com.atlassian.bamboo.configuration.GlobalAdminAction;
 import com.atlassian.bamboo.ww2.aware.permissions.GlobalAdminSecurityAware;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.jfrog.bamboo.util.TaskUtils;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalAdminSecurityAware {
 
-    private static final Logger log = Logger.getLogger(ConfigureBintrayAction.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ConfigureBintrayAction.class);
 
 
     private String bintrayUsername;

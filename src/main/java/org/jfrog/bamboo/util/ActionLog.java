@@ -2,7 +2,7 @@ package org.jfrog.bamboo.util;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class ActionLog {
     private Logger log;
 
     public ActionLog(){
-        this.log = Logger.getLogger(ActionLog.class);
+        this.log = LoggerFactory.getLogger(ActionLog.class);
         this.logEntries = Lists.newArrayList();
     }
 

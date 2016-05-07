@@ -13,7 +13,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.jfrog.bamboo.builder.BaseBuildInfoHelper;
 import org.jfrog.bamboo.configuration.BuildParamsOverrideManager;
 import org.jfrog.bamboo.context.GenericContext;
@@ -31,6 +31,8 @@ import org.jfrog.build.extractor.clientConfiguration.PatternMatcher;
 import org.jfrog.build.extractor.clientConfiguration.util.PublishedItemsHelper;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +43,7 @@ import java.util.*;
  * @author Tomer Cohen
  */
 public class GenericBuildInfoHelper extends BaseBuildInfoHelper {
-    private static final Logger log = Logger.getLogger(GenericBuildInfoHelper.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(GenericBuildInfoHelper.class);
     private final Map<String, String> env;
     private final String vcsRevision;
     private final String vcsUrl;
@@ -52,7 +54,7 @@ public class GenericBuildInfoHelper extends BaseBuildInfoHelper {
         this.vcsUrl = vcsUrl;
     }
 
-    public Build extractBuildInfo(BuildContext buildContext, BuildLogger buildLogger, GenericContext context, String username) {
+        public Build extractBuildInfo(BuildContext buildContext, BuildLogger buildLogger, GenericContext context, String username) {
         String url = determineBambooBaseUrl();
         StringBuilder summaryUrl = new StringBuilder(url);
         if (!url.endsWith("/")) {

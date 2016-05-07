@@ -66,19 +66,15 @@ public abstract class AbstractArtifactoryConfiguration extends AbstractTaskConfi
     }
 
     protected AbstractArtifactoryConfiguration(String builderContextPrefix, @Nullable String capabilityPrefix, ServerConfigManager serverConfigManager) {
+        super();
         this.builderContextPrefix = builderContextPrefix;
         this.capabilityPrefix = capabilityPrefix;
+        this.serverConfigManager = serverConfigManager;
         if (this.administrationConfiguration == null) {
             this.administrationConfiguration = new AdministrationConfigurationImpl(null);
         }
-        try {
-            if (ContainerManager.isContainerSetup()) {
-                this.serverConfigManager = serverConfigManager;
-            }
-        } catch (ComponentNotFoundException cnfe) {
-            System.out.println(ArtifactoryGradleConfiguration.class.getName() + " - " + new Date() +
-                    " - Warning: could not find component 'Artifactory Server Configuration Manager' (Can be ignored " +
-                    "when running on a remote agent).");
+        if (taskConfiguratorHelper == null) {
+            setTaskConfiguratorHelper();
         }
     }
 
@@ -209,6 +205,12 @@ public abstract class AbstractArtifactoryConfiguration extends AbstractTaskConfi
     public void setUiConfigSupport(UIConfigSupport uiConfigSupport) {
         this.uiConfigSupport = uiConfigSupport;
     }
+
+    private void setTaskConfiguratorHelper() {
+        this.taskConfiguratorHelper = (TaskConfiguratorHelper)
+                ContainerManager.getInstance().getContainerContext().getComponent("taskConfiguratorHelper");
+    }
+
 
     public void setAdministrationConfiguration(AdministrationConfiguration administrationConfiguration) {
         this.administrationConfiguration = administrationConfiguration;

@@ -9,7 +9,7 @@ import com.atlassian.bamboo.task.TaskResultBuilder;
 import com.atlassian.bamboo.task.runtime.RuntimeTaskDefinition;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jfrog.bamboo.admin.ServerConfig;
 import org.jfrog.bamboo.admin.ServerConfigManager;
@@ -20,6 +20,7 @@ import org.jfrog.bamboo.util.deployment.FilesCollector;
 import org.jfrog.build.api.util.FileChecksumCalculator;
 import org.jfrog.build.client.DeployDetails;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +34,7 @@ import java.util.Set;
  */
 public class ArtifactoryDeploymentTask implements DeploymentTaskType {
 
-    private static final Logger log = Logger.getLogger(ArtifactoryDeploymentTask.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ArtifactoryDeploymentTask.class);
 
     private String repositoryKey;
     private String artifactsRootDirectory;

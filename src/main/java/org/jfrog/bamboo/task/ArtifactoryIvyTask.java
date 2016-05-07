@@ -21,7 +21,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.apache.tools.ant.types.Commandline;
 import org.jetbrains.annotations.NotNull;
 import org.jfrog.bamboo.builder.ArtifactoryBuildInfoPropertyHelper;
@@ -46,7 +46,7 @@ import java.util.Map;
 public class ArtifactoryIvyTask extends ArtifactoryTaskType {
     public static final String TASK_NAME = "artifactoryIvyTask";
     public static final String EXECUTABLE_NAME = SystemUtils.IS_OS_WINDOWS ? "ant.bat" : "ant";
-    private static final Logger log = Logger.getLogger(ArtifactoryIvyTask.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ArtifactoryIvyTask.class);
     private static final String IVY_KEY = "system.builder.ivy.";
     private final ProcessService processService;
     private final EnvironmentVariableAccessor environmentVariableAccessor;

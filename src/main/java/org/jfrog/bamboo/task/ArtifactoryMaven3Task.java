@@ -20,7 +20,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.apache.tools.ant.types.Commandline;
 import org.jetbrains.annotations.NotNull;
 import org.jfrog.bamboo.builder.ArtifactoryBuildInfoPropertyHelper;
@@ -44,7 +44,7 @@ import java.util.Map;
  */
 public class ArtifactoryMaven3Task extends ArtifactoryTaskType {
     public static final String TASK_NAME = "maven3Task";
-    private static final Logger log = Logger.getLogger(ArtifactoryMaven3Task.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ArtifactoryMaven3Task.class);
     private final ProcessService processService;
     private final EnvironmentVariableAccessor environmentVariableAccessor;
     private final CapabilityContext capabilityContext;

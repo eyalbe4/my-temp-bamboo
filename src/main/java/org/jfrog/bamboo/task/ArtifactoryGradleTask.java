@@ -24,7 +24,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.apache.tools.ant.types.Commandline;
 import org.jetbrains.annotations.NotNull;
 import org.jfrog.bamboo.builder.BuilderDependencyHelper;
@@ -54,7 +54,7 @@ public class ArtifactoryGradleTask extends ArtifactoryTaskType {
     public static final String TASK_NAME = "artifactoryGradleTask";
     public static final String EXECUTABLE_NAME = SystemUtils.IS_OS_WINDOWS ? "gradle.bat" : "gradle";
     public static final String EXECUTABLE_WRAPPER_NAME = SystemUtils.IS_OS_WINDOWS ? "./gradlew.bat" : "./gradlew";
-    private static final Logger log = Logger.getLogger(ArtifactoryGradleTask.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ArtifactoryGradleTask.class);
     private static final String GRADLE_KEY = "system.builder.gradle.";
     private final ProcessService processService;
     private final CapabilityContext capabilityContext;

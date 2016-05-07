@@ -27,7 +27,7 @@ import com.google.common.collect.Maps;
 import com.opensymphony.xwork.ActionContext;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jfrog.bamboo.admin.ServerConfig;
 import org.jfrog.bamboo.admin.ServerConfigManager;
 import org.jfrog.bamboo.context.AbstractBuildContext;
@@ -41,6 +41,7 @@ import org.jfrog.bamboo.util.TaskUtils;
 import org.jfrog.bamboo.util.version.VersionHelper;
 import org.jfrog.build.api.release.Promotion;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -64,7 +65,7 @@ public class ReleaseAndPromotionAction extends ViewBuildResults {
     public static final String CURRENT_VALUE_KEY = "version.currentValue";
     public static final String RELEASE_PROP_KEY = "version.releaseProp";
     public static final String MODULE_KEY = "version.key";
-    private static final Logger log = Logger.getLogger(ReleaseAndPromotionAction.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ReleaseAndPromotionAction.class);
     private static final String PROMOTION_NORMAL_MODE = "normalMode";
     private static final Map<String, String> MODULE_VERSION_TYPES =
             ImmutableMap.of(ReleaseProvider.CFG_ONE_VERSION, "One version for all modules.",

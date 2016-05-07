@@ -4,13 +4,15 @@ import com.atlassian.bamboo.build.ViewBuildResults;
 import com.atlassian.bamboo.plugin.RemoteAgentSupported;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.jfrog.bamboo.promotion.PromotionContext;
+import org.slf4j.Logger; import org.slf4j.LoggerFactory;
 import org.jfrog.bamboo.admin.BintrayConfiguration;
 import org.jfrog.bamboo.admin.ServerConfig;
 import org.jfrog.bamboo.bintray.client.BintrayClient;
 //import org.jfrog.bamboo.promotion.PromotionContext;
 import org.jfrog.bamboo.util.TaskUtils;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,8 +23,8 @@ import java.util.Map;
 @RemoteAgentSupported
 public class PushToBintrayAction extends ViewBuildResults {
 
-    public static Logger log = Logger.getLogger(PushToBintrayAction.class);
-//    public static PromotionContext context = new PromotionContext();
+    public static final org.slf4j.Logger log = LoggerFactory.getLogger(PushToBintrayAction.class);
+    public static PromotionContext context = new PromotionContext();
 
     private static final String BINTRAY_CONFIG_PREFIX = "bintray.";
     private static Map<String, String> signMethodList = ImmutableMap.of(
@@ -43,14 +45,14 @@ public class PushToBintrayAction extends ViewBuildResults {
 
     @Override
     public String doExecute() throws Exception {
-//        context.clearLog();
+        context.clearLog();
         String result = super.doExecute();
         if (ERROR.equals(result)) {
             return ERROR;
         }
         try {
-//            context.setBuildNumber(this.getBuildNumber());
-//            context.setBuildKey(this.getImmutableBuild().getName());
+            context.setBuildNumber(this.getBuildNumber());
+            context.setBuildKey(this.getImmutableBuild().getName());
             BintrayConfiguration bintrayConfig = TaskUtils.getBintrayConfig();
             bintrayClient = new BintrayClient(bintrayConfig);
             Map<String, String> buildTaskConfiguration = TaskUtils.findConfigurationForBuildTask(this);
@@ -180,13 +182,13 @@ public class PushToBintrayAction extends ViewBuildResults {
         this.pushing = pushing;
     }
 
-//    public List<String> getResult() {
-//        return context.getLog();
-//    }
-//
-//    public boolean isDone() {
-//        return context.isDone();
-//    }
+    public List<String> getResult() {
+        return context.getLog();
+    }
+
+    public boolean isDone() {
+        return context.isDone();
+    }
 
     /**
      * Populate the Bintray configuration from the build task configuration to the "Push to Bintray" task
