@@ -1,14 +1,14 @@
 package it.org.jfrog.bamboo;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
 import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
 import org.jfrog.bamboo.api.MyPluginComponent;
 import com.atlassian.sal.api.ApplicationProperties;
 
-import static org.junit.Assert.assertEquals;
+//import static org.junit.Assert.assertEquals;
 
-@RunWith(AtlassianPluginsTestRunner.class)
+//@RunWith(AtlassianPluginsTestRunner.class)
 public class MyComponentWiredTest
 {
     private final ApplicationProperties applicationProperties;
@@ -20,9 +20,9 @@ public class MyComponentWiredTest
         this.myPluginComponent = myPluginComponent;
     }
 
-    @Test
-    public void testMyName()
-    {
-        assertEquals("names do not match!", "myComponent:" + applicationProperties.getDisplayName(),myPluginComponent.getName());
-    }
+//    @Test
+//    public void testMyName()
+//    {
+//        assertEquals("names do not match!", "myComponent:" + applicationProperties.getDisplayName(),myPluginComponent.getName());
+//    }
 }

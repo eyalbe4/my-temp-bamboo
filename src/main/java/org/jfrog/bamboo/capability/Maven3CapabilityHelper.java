@@ -67,7 +67,7 @@ public class Maven3CapabilityHelper extends AbstractHomeDirectoryCapabilityDefau
             this.pattern = pattern;
         }
 
-        @Override
+//        @Override
         public boolean apply(@Nullable final File input) {
             if (input == null) {
                 return false;

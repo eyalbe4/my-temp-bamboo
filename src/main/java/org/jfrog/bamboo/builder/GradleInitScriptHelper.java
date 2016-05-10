@@ -40,8 +40,8 @@ import org.jfrog.build.api.util.NullLog;
 import org.jfrog.build.extractor.clientConfiguration.ArtifactoryClientConfiguration;
 import org.jfrog.build.extractor.clientConfiguration.IncludeExcludePatterns;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +55,7 @@ import static org.jfrog.bamboo.util.ConstantValues.*;
 public class GradleInitScriptHelper extends BaseBuildInfoHelper {
 
     @SuppressWarnings({"UnusedDeclaration"})
-    private static final Logger log = LoggerFactory.getLogger(GradleInitScriptHelper.class);
+    private static final Logger log = Logger.getLogger(GradleInitScriptHelper.class);
 
     public ConfigurationPathHolder createAndGetGradleInitScriptPath(String dependenciesDir,
                                                                     GradleBuildContext buildContext, BuildLogger logger, String scriptTemplate,

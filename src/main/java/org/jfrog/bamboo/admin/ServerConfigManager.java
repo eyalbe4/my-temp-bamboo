@@ -80,7 +80,7 @@ public class ServerConfigManager implements Serializable {
 
     public static ServerConfigManager getInstance() {
         ServerConfigManager serverConfigManager = new ServerConfigManager();
-//        ContainerManager.autowireComponent(serverConfigManager);
+        ContainerManager.autowireComponent(serverConfigManager);
         return serverConfigManager;
     }
 

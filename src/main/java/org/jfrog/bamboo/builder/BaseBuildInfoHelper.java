@@ -33,8 +33,8 @@ import org.jfrog.bamboo.configuration.ConfigurationHelper;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.build.api.BuildInfoConfigProperties;
 import org.jfrog.build.extractor.BuildInfoExtractorUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,7 +50,7 @@ import static org.jfrog.bamboo.util.ConstantValues.BUILD_SERVLET_KEY_PARAM;
  */
 public abstract class BaseBuildInfoHelper {
     @SuppressWarnings({"UnusedDeclaration"})
-    private static final Logger log = LoggerFactory.getLogger(BaseBuildInfoHelper.class);
+    private static final Logger log = Logger.getLogger(BaseBuildInfoHelper.class);
 
     protected BuildContext context;
     protected ServerConfigManager serverConfigManager;

@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.jfrog.bamboo.admin.BintrayConfiguration;
 import org.jfrog.bamboo.admin.ServerConfig;
 import org.jfrog.bamboo.bintray.client.BintrayClient;
-//import org.jfrog.bamboo.promotion.PromotionContext;
+import org.jfrog.bamboo.promotion.PromotionContext;
 import org.jfrog.bamboo.util.TaskUtils;
 
 import java.util.Map;
@@ -22,7 +22,7 @@ import java.util.Map;
 public class PushToBintrayAction extends ViewBuildResults {
 
     public static Logger log = Logger.getLogger(PushToBintrayAction.class);
-//    public static PromotionContext context = new PromotionContext();
+    public static PromotionContext context = new PromotionContext();
 
     private static final String BINTRAY_CONFIG_PREFIX = "bintray.";
     private static Map<String, String> signMethodList = ImmutableMap.of(
@@ -43,14 +43,14 @@ public class PushToBintrayAction extends ViewBuildResults {
 
     @Override
     public String doExecute() throws Exception {
-//        context.clearLog();
+        context.clearLog();
         String result = super.doExecute();
         if (ERROR.equals(result)) {
             return ERROR;
         }
         try {
-//            context.setBuildNumber(this.getBuildNumber());
-//            context.setBuildKey(this.getImmutableBuild().getName());
+            context.setBuildNumber(this.getBuildNumber());
+            context.setBuildKey(this.getImmutableBuild().getName());
             BintrayConfiguration bintrayConfig = TaskUtils.getBintrayConfig();
             bintrayClient = new BintrayClient(bintrayConfig);
             Map<String, String> buildTaskConfiguration = TaskUtils.findConfigurationForBuildTask(this);
