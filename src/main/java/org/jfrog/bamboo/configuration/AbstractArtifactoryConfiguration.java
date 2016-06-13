@@ -45,8 +45,8 @@ public abstract class AbstractArtifactoryConfiguration extends AbstractTaskConfi
 
     public static final String CFG_TEST_RESULTS_FILE_PATTERN_OPTION_CUSTOM = "customTestDirectory";
     public static final String CFG_TEST_RESULTS_FILE_PATTERN_OPTION_STANDARD = "standardTestDirectory";
-    private static final Map TEST_RESULTS_FILE_PATTERN_TYPES = ImmutableMap
-            .of(CFG_TEST_RESULTS_FILE_PATTERN_OPTION_STANDARD, "Look in the standard test results directory.",
+    private static final Map TEST_RESULTS_FILE_PATTERN_TYPES =
+            ImmutableMap.of(CFG_TEST_RESULTS_FILE_PATTERN_OPTION_STANDARD, "Look in the standard test results directory.",
                     CFG_TEST_RESULTS_FILE_PATTERN_OPTION_CUSTOM, "Specify custom results directories");
     public static final Map<String, String> SIGN_METHOD_MAP = ImmutableMap.of(
             "false", "Don't Sign", "true", "Sign");

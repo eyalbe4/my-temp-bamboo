@@ -22,18 +22,11 @@ public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalA
     private String sonatypeOssPassword;
     private String isSendTest;
 
-    private ServerConfigManager serverConfigManager;
-
+    private ArtifactoryAdminService artifactoryAdminService;
     private BintrayConfiguration bintrayConfig;
 
-
-
-    public ConfigureBintrayAction(ServerConfigManager serverConfigManager) {
-        this.serverConfigManager = serverConfigManager;
-        if (serverConfigManager != null) {
-            bintrayConfig = serverConfigManager.getBintrayConfig();
-            setBintrayConfig(bintrayConfig);
-        }
+    public ConfigureBintrayAction(ArtifactoryAdminService artifactoryAdminService) throws IOException {
+        this.artifactoryAdminService = artifactoryAdminService;
     }
 
     public String doDefault() throws Exception {
@@ -48,9 +41,10 @@ public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalA
             bintrayTest();
             return INPUT;
         }
+        artifactoryAdminService.updateBintrayConfig(bintrayUsername, bintrayApiKey,
+                sonatypeOssUsername, sonatypeOssPassword);
         BintrayConfiguration newBintrayConf = new BintrayConfiguration(
-                        bintrayUsername, bintrayApiKey, sonatypeOssUsername, sonatypeOssPassword);
-        serverConfigManager.updateBintrayConfiguration(newBintrayConf);
+                bintrayUsername, bintrayApiKey, sonatypeOssUsername, sonatypeOssPassword);
         setBintrayConfig(newBintrayConf);
         return SUCCESS;
     }
@@ -70,6 +64,15 @@ public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalA
     }
 
     public String doBrowse() throws Exception {
+        if (this.bintrayConfig == null) {
+            if (artifactoryAdminService.getBintrayConfig(false) != null) {
+                bintrayConfig = artifactoryAdminService.getBintrayConfig(false);
+                setBintrayConfig(bintrayConfig);
+            }
+            else {
+                addActionError("Server manager not loaded!" + new RuntimeException().getStackTrace());
+            }
+        }
         return super.execute();
     }
 
@@ -88,10 +91,10 @@ public class ConfigureBintrayAction extends GlobalAdminAction implements GlobalA
         }
     }
 
-    public BintrayConfiguration getBintrayConfig() {
+    public BintrayConfiguration getBintrayConfig() throws IOException {
         if (this.bintrayConfig == null) {
-            if (serverConfigManager != null) {
-                bintrayConfig = serverConfigManager.getBintrayConfig();
+            if (artifactoryAdminService.getBintrayConfig(false) != null) {
+                bintrayConfig = artifactoryAdminService.getBintrayConfig(false);
                 setBintrayConfig(bintrayConfig);
                 return this.bintrayConfig;
             }

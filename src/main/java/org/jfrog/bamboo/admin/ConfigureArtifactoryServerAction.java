@@ -36,9 +36,10 @@ import java.net.URL;
 public class ConfigureArtifactoryServerAction extends BambooActionSupport implements GlobalAdminSecurityAware {
 
     private transient Logger log = Logger.getLogger(ConfigureArtifactoryServerAction.class);
+    private ArtifactoryAdminService artifactoryAdminService;
 
     private String mode;
-    private long serverId;
+    private int serverId;
     private String url;
     private String username;
     private String password;
@@ -46,10 +47,8 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
     private String isSendTest;
 
 
-    private transient ServerConfigManager serverConfigManager;
-
-    public ConfigureArtifactoryServerAction(ServerConfigManager serverConfigManager) {
-        this.serverConfigManager = serverConfigManager;
+    public ConfigureArtifactoryServerAction(ArtifactoryAdminService artifactoryAdminService) {
+        this.artifactoryAdminService = artifactoryAdminService;
         mode = "add";
         timeout = 300;
         }
@@ -83,17 +82,17 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
             return INPUT;
         }
 
-        serverConfigManager.addServerConfiguration(
-                new ServerConfig(-1, getUrl(), getUsername(), getPassword(), getTimeout()));
+        artifactoryAdminService.addArtifactoryServer(getUrl(), getUsername(), getPassword(), getTimeout());
         return SUCCESS;
     }
 
     public String doEdit() throws Exception {
-        ServerConfig serverConfig = serverConfigManager.getServerConfigById(serverId);
-        if (serverConfig == null) {
+
+        ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(serverId);
+        if (artifactoryServer == null) {
             throw new IllegalArgumentException("Could not find Artifactory server configuration by the ID " + serverId);
         }
-        updateFieldsFromServerConfig(serverConfig);
+        updateFieldsFromServerConfig(artifactoryServer);
         return INPUT;
    }
 
@@ -103,12 +102,12 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
             testConnection();
             return INPUT;
         }
-        serverConfigManager.updateServerConfiguration(createServerConfig());
+        artifactoryAdminService.updateArtifactoryServer(serverId, url, username, password, timeout);
         return SUCCESS;
     }
 
     public String doDelete() throws Exception {
-        serverConfigManager.deleteServerConfiguration(getServerId());
+        artifactoryAdminService.deleteArtifactoryServer(getServerId());
         return SUCCESS;
     }
 
@@ -132,11 +131,11 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
         return StringUtils.isNotBlank(isSendTest);
     }
 
-    public long getServerId() {
+    public int getServerId() {
         return serverId;
     }
 
-    public void setServerId(long serverId) {
+    public void setServerId(int serverId) {
         this.serverId = serverId;
     }
 
@@ -210,15 +209,10 @@ public class ConfigureArtifactoryServerAction extends BambooActionSupport implem
         log.error("Error while testing the connection to Artifactory server " + url, e);
     }
 
-    private void updateFieldsFromServerConfig(ServerConfig serverConfig) {
-        setUrl(serverConfig.getUrl());
-        setUsername(serverConfig.getUsername());
-        setPassword(serverConfig.getPassword());
-        setTimeout(serverConfig.getTimeout());
-    }
-
-    @NotNull
-    private ServerConfig createServerConfig() {
-        return new ServerConfig(serverId, url, username, password, timeout);
+    private void updateFieldsFromServerConfig(ArtifactoryServer artifactoryServer) {
+        setUrl(artifactoryServer.getServerUrl());
+        setUsername(artifactoryServer.getUsername());
+        setPassword(artifactoryServer.getPassword());
+        setTimeout(artifactoryServer.getTimeout());
     }
 }

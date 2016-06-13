@@ -1,5 +1,3 @@
-[#-- @ftlvariable name="action" type="org.jfrog.bamboo.admin.ManageArtifactoryServersAction" --]
-[#-- @ftlvariable name="" type="org.jfrog.bamboo.admin.ManageArtifactoryServersAction" --]
 
 <html>
 <head>

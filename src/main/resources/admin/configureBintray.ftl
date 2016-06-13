@@ -1,5 +1,5 @@
-[#-- @ftlvariable name="action" type="org.jfrog.bamboo.admin.ConfigureBintrayAction" --]
-[#-- @ftlvariable name="" type="org.jfrog.bamboo.admin.ConfigureBintrayAction" --]
+
+
 <html>
 <head>
     [@ui.header pageKey="bintray.config.heading" title=true/]

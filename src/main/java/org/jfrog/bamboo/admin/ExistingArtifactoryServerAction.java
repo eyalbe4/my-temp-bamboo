@@ -29,18 +29,18 @@ import java.util.List;
  */
 public class ExistingArtifactoryServerAction extends AbstractEntityPagerSupport implements GlobalAdminSecurityAware {
 
-	private ServerConfigManager serverConfigManager;
+	private ArtifactoryAdminService artifactoryAdminService;
 
-	public ExistingArtifactoryServerAction( ServerConfigManager serverConfigManager) {
-		this.serverConfigManager = serverConfigManager;
+	public ExistingArtifactoryServerAction( ArtifactoryAdminService artifactoryAdminService) {
+		this.artifactoryAdminService = artifactoryAdminService;
 	}
 
 	public String doBrowse() throws Exception {
 		return super.execute();
 	}
 
-	public List<ServerConfig> getServerConfigs() {
-		return serverConfigManager.getAllServerConfigs();
+	public List<ArtifactoryServer> getArtifactroryServers() {
+		return artifactoryAdminService.getAllArtifactoryServers();
 	}
 
 	@Override

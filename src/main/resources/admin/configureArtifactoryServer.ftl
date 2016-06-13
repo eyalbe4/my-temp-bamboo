@@ -1,3 +1,5 @@
+
+
 [#if mode == 'edit' ]
     [#assign targetAction = 'updateServer']
     [#assign titleText = 'artifactory.server.edit' /]

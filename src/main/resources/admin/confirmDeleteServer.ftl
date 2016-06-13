@@ -1,3 +1,5 @@
+
+
 <title>[@ww.text name="artifactoryServer.delete" /]</title>
     [@ww.form action="deleteServer" namespace="/admin"
 submitLabelKey="global.buttons.delete"

@@ -1,5 +1,3 @@
-[#-- @ftlvariable name="action" type="org.jfrog.bamboo.admin.ExistingArtifactoryServerAction" --]
-[#-- @ftlvariable name="" type="org.jfrog.bamboo.admin.ExistingArtifactoryServerAction" --]
 
 <div class="toolbar">
     <div class="aui-toolbar inline">
@@ -26,26 +24,29 @@
         <th class="operations">Operations</th>
     </tr>
     </thead>
-    [#if action.getServerConfigs()?has_content]
-        [#foreach serverConfig in serverConfigs]
+    [#if artifactroryServers!?size>0]
+        [#foreach artifactroryServer in artifactroryServers]
             <tr>
                 <td>
-                    <a href="${serverConfig.url}" target="_blank" >${serverConfig.url}</a>
+                    <a href="${artifactroryServer.serverUrl}" target="_blank" >${artifactroryServer.serverUrl}</a>
                 </td>
                 <td>
-                ${serverConfig.username}
+                ${artifactroryServer.username}
                 </td>
                 <td>
-                ${serverConfig.timeout}
+                ${artifactroryServerer.timeout}
                 </td>
                 <td class="operations">
-                    <a id="editServer-${serverConfig.id}" href="[@ww.url action='editServer' serverId=serverConfig.id/]">
+                    <a id="editServer-${artifactroryServer.ID}"
+                       href="[@ww.url action='editServer' serverId=artifactroryServer.ID/]">
                         Edit
                     </a>
                     |
-                    <a id="deleteServer-${serverConfig.id}"
-                       href="[@ww.url action='confirmDeleteServer' serverId=serverConfig.id returnUrl=currentUrl/]"
-                       class="delete" title="[@ww.text name='artifactory.server.delete' /]">[@ww.text name="global.buttons.delete" /]
+                    <a id="deleteServer-${artifactroryServer.ID}"
+                       href="[@ww.url action='confirmDeleteServer' serverId=artifactroryServer.ID returnUrl=currentUrl/]"
+                       href="[@ww.url action='confirmDeleteServer' serverId=artifactroryServer.ID returnUrl=currentUrl/]"
+                       class="delete" title="[@ww.text name='artifactory.server.delete' /]">
+                        [@ww.text name="global.buttons.delete" /]
                     </a>
                 </td>
             </tr>
@@ -61,6 +62,6 @@
 </div>
 [/@ui.bambooPanel]
 
-[@dj.simpleDialogForm triggerSelector=".delete" width=560 height=400 headerKey="artifactory.server.delete" submitCallback="reloadThePage"/]
+[@dj.simpleDialogForm triggerSelector=".delete" width=560 height=400 headerKey="artifactory.server.delete"
+submitCallback="reloadThePage"/]
 
-[#--[@cp.entityPagination actionUrl='${req.contextPath}/admin/manageArtifactoryServers.action?' paginationSupport=paginationSupport /]--]

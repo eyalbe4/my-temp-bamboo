@@ -90,15 +90,9 @@ public class ArtifactoryGenericDeployTask implements TaskType {
         env.putAll(environmentVariableAccessor.getEnvironment(taskContext));
         env.putAll(environmentVariableAccessor.getEnvironment());
         String vcsRevision = ScmHelper.getRevisionKey(context);
-        if (StringUtils.isBlank(vcsRevision)) {
-            vcsRevision = "";
-        }
-
+        vcsRevision = convertNullToEmptyString(vcsRevision);
         String vcsUrl = ScmHelper.getVcsUrl(context);
-        if (StringUtils.isBlank(vcsUrl)) {
-            vcsUrl = "";
-        }
-
+        vcsUrl = convertNullToEmptyString(vcsUrl);
         buildInfoHelper = new GenericBuildInfoHelper(env, vcsRevision, vcsUrl);
         buildInfoHelper.init(buildParamsOverrideManager, context);
         try {
@@ -228,5 +222,12 @@ public class ArtifactoryGenericDeployTask implements TaskType {
             return plugin.getPluginInformation().getVersion();
         }
         return StringUtils.EMPTY;
+    }
+
+    private String convertNullToEmptyString(String stringToConvert) {
+            if (StringUtils.isBlank(stringToConvert)) {
+                stringToConvert = "";
+            }
+            return stringToConvert;
     }
 }

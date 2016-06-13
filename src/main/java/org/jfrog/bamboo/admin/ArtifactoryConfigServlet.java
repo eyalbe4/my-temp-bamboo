@@ -44,10 +44,10 @@ public class ArtifactoryConfigServlet extends HttpServlet {
 
     private Logger log = Logger.getLogger(ArtifactoryConfigServlet.class);
 
-    private ServerConfigManager serverConfigManager;
+    private ArtifactoryAdminService artifactoryAdminService;
 
-    public ArtifactoryConfigServlet(ServerConfigManager serverConfigManager) {
-        this.serverConfigManager = serverConfigManager;
+    public ArtifactoryConfigServlet(ArtifactoryAdminService artifactoryAdminService) {
+        this.artifactoryAdminService = artifactoryAdminService;
     }
 
     /**
@@ -65,18 +65,18 @@ public class ArtifactoryConfigServlet extends HttpServlet {
             return;
         }
 
-        long serverId;
+        int serverId;
         try {
-            serverId = Long.parseLong(serverIdValue);
+            serverId = Integer.parseInt(serverIdValue);
         } catch (NumberFormatException e) {
-            resp.sendError(HttpStatus.SC_BAD_REQUEST, "Please provide a valid long-type server ID.");
+            resp.sendError(HttpStatus.SC_BAD_REQUEST, "Please provide a valid int-type server ID.");
             log.error("Unable to retrieve server configuration information. An invalid server ID was provided (" +
                     serverIdValue + ").");
             return;
         }
 
-        ServerConfig serverConfig = serverConfigManager.getServerConfigById(serverId);
-        if (serverConfig == null) {
+        ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(serverId);
+        if (artifactoryServer == null) {
             resp.sendError(HttpStatus.SC_NOT_FOUND, "Could not find an Artifactory server configuration with the ID " +
                     serverId + ".");
             log.error("Unable to retrieve server configuration. No configuration was found with the ID " + serverId +
@@ -87,13 +87,13 @@ public class ArtifactoryConfigServlet extends HttpServlet {
         String deployableReposValue = req.getParameter("deployableRepos");
         String resolvingReposValue = req.getParameter("resolvingRepos");
         if (StringUtils.isNotBlank(deployableReposValue) && Boolean.valueOf(deployableReposValue)) {
-            List<String> deployableRepoList = serverConfigManager.getDeployableRepos(serverId, req, resp);
+            List<String> deployableRepoList = artifactoryAdminService.getDeployableRepos(serverId, req, resp);
             returnJsonObject(resp, deployableRepoList);
         } else if (StringUtils.isNotBlank(resolvingReposValue) && Boolean.valueOf(resolvingReposValue)) {
-            List<String> resolvingRepoList = serverConfigManager.getResolvingRepos(serverId, req, resp);
+            List<String> resolvingRepoList = artifactoryAdminService.getResolvingRepos(serverId, req, resp);
             returnJsonObject(resp, resolvingRepoList);
         } else {
-            returnJsonObject(resp, serverConfig);
+            returnJsonObject(resp, artifactoryServer);
         }
     }
 
