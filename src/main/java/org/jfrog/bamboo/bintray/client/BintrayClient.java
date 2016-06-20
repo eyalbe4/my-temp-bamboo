@@ -8,8 +8,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.admin.BintrayConfiguration;
-import org.jfrog.bamboo.admin.ServerConfig;
 import org.jfrog.bamboo.bintray.MavenSyncHelper;
 import org.jfrog.bamboo.util.HttpUtils;
 
@@ -52,11 +52,13 @@ public class BintrayClient {
         }
     }
 
-    public Map<String, Object> getBintrayJsonFileLocation(ServerConfig artifactoryConfig, String buildName, String buildNumber) {
+    public Map<String, Object> getBintrayJsonFileLocation(ArtifactoryServer artifactoryServer, String buildName,
+                                                          String buildNumber) {
         String searchJson = MavenSyncHelper.createArtifactBuildSearchQuery(buildName, buildNumber);
-        String apiUri = artifactoryConfig.getUrl() + "/api/search/buildArtifacts";
+        String apiUri = artifactoryServer.getServerUrl() + "/api/search/buildArtifacts";
         HttpPost buildArtifactSearch = new HttpPost(apiUri);
-        buildArtifactSearch.setHeader(HttpUtils.createAuthorizationHeader(artifactoryConfig.getUsername(), artifactoryConfig.getPassword()));
+        buildArtifactSearch.setHeader(HttpUtils.createAuthorizationHeader(artifactoryServer.getUsername(),
+                artifactoryServer.getPassword()));
         buildArtifactSearch.setHeader("Content-Type", "application/json");
         try {
             buildArtifactSearch.setEntity(new StringEntity(searchJson));
@@ -68,9 +70,10 @@ public class BintrayClient {
         }
     }
 
-    public Map<String, Object> downloadBintrayInfoDescriptor(ServerConfig artifactoryConfig, String fileUrl) {
+    public Map<String, Object> downloadBintrayInfoDescriptor(ArtifactoryServer artifactoryServer, String fileUrl) {
         HttpGet downloadRequest = new HttpGet(fileUrl);
-        downloadRequest.setHeader(HttpUtils.createAuthorizationHeader(artifactoryConfig.getUsername(), artifactoryConfig.getPassword()));
+        downloadRequest.setHeader(HttpUtils.createAuthorizationHeader(artifactoryServer.getUsername(),
+                artifactoryServer.getPassword()));
         try {
             HttpResponse fileResponse = client.execute(downloadRequest);
             String jsonDescriptorString = IOUtils.toString(fileResponse.getEntity().getContent(), CharEncoding.UTF_8);
@@ -80,5 +83,4 @@ public class BintrayClient {
         }
 
     }
-
 }

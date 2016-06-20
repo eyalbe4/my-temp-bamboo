@@ -26,7 +26,8 @@ import com.atlassian.bamboo.v2.build.trigger.TriggerReason;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jfrog.bamboo.admin.ServerConfig;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.configuration.BuildParamsOverrideManager;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.util.TaskUtils;
@@ -35,6 +36,7 @@ import org.jfrog.build.api.util.NullLog;
 import org.jfrog.build.extractor.clientConfiguration.ArtifactoryClientConfiguration;
 import org.jfrog.build.extractor.clientConfiguration.IncludeExcludePatterns;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,16 +50,18 @@ import static org.jfrog.bamboo.util.ConstantValues.*;
 public abstract class ArtifactoryBuildInfoPropertyHelper extends BaseBuildInfoHelper {
 
     private static final Logger log = Logger.getLogger(ArtifactoryBuildInfoPropertyHelper.class);
+    @Autowired
+    protected ArtifactoryAdminService artifactoryAdminService;
 
     public String createFileAndGetPath(AbstractBuildContext buildContext,
                                        BuildLogger logger, Map<String, String> taskEnv, Map<String, String> generalEnv,
                                        String artifactoryPluginVersion) {
-        long selectedServerId = buildContext.getArtifactoryServerId();
+        int selectedServerId = buildContext.getArtifactoryServerId();
 
         if (selectedServerId != -1) {
 
-            ServerConfig serverConfig = serverConfigManager.getServerConfigById(selectedServerId);
-            if (serverConfig == null) {
+            ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(selectedServerId);
+            if (artifactoryServer == null) {
 
                 String warningMessage =
                         "Found an ID of a selected Artifactory server configuration (" + selectedServerId +
@@ -66,12 +70,12 @@ public abstract class ArtifactoryBuildInfoPropertyHelper extends BaseBuildInfoHe
                 log.warn(warningMessage);
             } else {
                 ArtifactoryClientConfiguration clientConf = new ArtifactoryClientConfiguration(new NullLog());
-                addBuilderInfoProperties(buildContext, serverConfig, clientConf, taskEnv, generalEnv, artifactoryPluginVersion);
+                addBuilderInfoProperties(buildContext, artifactoryServer, clientConf, taskEnv, generalEnv, artifactoryPluginVersion);
                 try {
                     File tempPropertiesFile = File.createTempFile("buildInfo", "properties");
                     clientConf.setPropertiesFile(tempPropertiesFile.getAbsolutePath());
                     clientConf.persistToPropertiesFile();
-                    String serverUrl = serverConfigManager.substituteVariables(serverConfig.getUrl());
+                    String serverUrl = artifactoryAdminService.substituteVariables(artifactoryServer.getServerUrl());
                     context.getBuildResult().getCustomBuildData().put(BUILD_RESULT_COLLECTION_ACTIVATED_PARAM, "true");
                     context.getBuildResult().getCustomBuildData().put(BUILD_RESULT_SELECTED_SERVER_PARAM, serverUrl);
                     this.context.getBuildResult().getCustomBuildData().put(BUILD_RESULT_RELEASE_ACTIVATED_PARAM,
@@ -88,7 +92,7 @@ public abstract class ArtifactoryBuildInfoPropertyHelper extends BaseBuildInfoHe
         return null;
     }
 
-    private void addBuilderInfoProperties(AbstractBuildContext buildContext, ServerConfig serverConfig,
+    private void addBuilderInfoProperties(AbstractBuildContext buildContext, ArtifactoryServer artifactoryServer,
                                           ArtifactoryClientConfiguration clientConf, Map<String, String> environment,
                                           Map<String, String> generalEnv, String pluginVersion) {
         String buildName = context.getPlanName();
@@ -154,8 +158,8 @@ public abstract class ArtifactoryBuildInfoPropertyHelper extends BaseBuildInfoHe
             throw new RuntimeException("Could not integrate black duck properties", e);
         }
 
-        addClientProperties(buildContext, clientConf, serverConfig, environment);
-        addPublisherProperties(buildContext, clientConf, serverConfig, environment);
+        addClientProperties(buildContext, clientConf, artifactoryServer, environment);
+        addPublisherProperties(buildContext, clientConf, artifactoryServer, environment);
 
         Map<String, String> props = filterAndGetGlobalVariables();
         props.putAll(environment);
@@ -213,22 +217,22 @@ public abstract class ArtifactoryBuildInfoPropertyHelper extends BaseBuildInfoHe
     }
 
     abstract protected void addClientProperties(AbstractBuildContext buildContext,
-                                                ArtifactoryClientConfiguration clientConf, ServerConfig serverConfig, Map<String, String> environment);
+                                                ArtifactoryClientConfiguration clientConf, ArtifactoryServer artifactoryServer, Map<String, String> environment);
 
     private void addPublisherProperties(AbstractBuildContext buildContext,
-                                        ArtifactoryClientConfiguration clientConf, ServerConfig serverConfig, Map<String, String> environment) {
+                                        ArtifactoryClientConfiguration clientConf, ArtifactoryServer artifactoryServer, Map<String, String> environment) {
 
-        String serverUrl = serverConfigManager.substituteVariables(serverConfig.getUrl());
+        String serverUrl = artifactoryAdminService.substituteVariables(artifactoryServer.getServerUrl());
         clientConf.publisher.setContextUrl(serverUrl);
-        clientConf.setTimeout(serverConfig.getTimeout());
+        clientConf.setTimeout(artifactoryServer.getTimeout());
 
         String deployerUsername = overrideParam(buildContext.getDeployerUsername(), BuildParamsOverrideManager.OVERRIDE_ARTIFACTORY_DEPLOYER_USERNAME);
         if (StringUtils.isBlank(deployerUsername)) {
-            deployerUsername = serverConfig.getUsername();
+            deployerUsername = artifactoryServer.getUsername();
         }
         String password = overrideParam(buildContext.getDeployerPassword(), BuildParamsOverrideManager.OVERRIDE_ARTIFACTORY_DEPLOYER_PASSWORD);
         if (StringUtils.isBlank(password)) {
-            password = serverConfig.getPassword();
+            password = artifactoryServer.getPassword();
         }
         if (StringUtils.isNotBlank(deployerUsername)) {
             clientConf.publisher.setUsername(deployerUsername);

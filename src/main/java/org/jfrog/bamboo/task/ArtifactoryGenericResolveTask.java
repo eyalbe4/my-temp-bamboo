@@ -6,8 +6,8 @@ import com.atlassian.bamboo.variable.CustomVariableContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.jfrog.bamboo.admin.ServerConfig;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.configuration.BuildParamsOverrideManager;
 import org.jfrog.bamboo.context.GenericContext;
 import org.jfrog.bamboo.util.BambooBuildInfoLog;
@@ -31,10 +31,13 @@ public class ArtifactoryGenericResolveTask implements TaskType {
 
     private BuildLogger logger;
     private BuildParamsOverrideManager buildParamsOverrideManager;
+    private ArtifactoryAdminService artifactoryAdminService;
 
 
-    public ArtifactoryGenericResolveTask(CustomVariableContext customVariableContext) {
+    public ArtifactoryGenericResolveTask(CustomVariableContext customVariableContext,
+                                         ArtifactoryAdminService artifactoryAdminService) {
         this.buildParamsOverrideManager = new BuildParamsOverrideManager(customVariableContext);
+        this.artifactoryAdminService = artifactoryAdminService;
     }
 
     @NotNull
@@ -97,20 +100,22 @@ public class ArtifactoryGenericResolveTask implements TaskType {
     }
 
     private ArtifactoryDependenciesClient getArtifactoryDependenciesClient(GenericContext genericContext) {
-        ServerConfigManager serverConfigManager = ServerConfigManager.getInstance();
-        ServerConfig serverConfig = serverConfigManager.getServerConfigById(genericContext.getSelectedServerId());
-        if (serverConfig == null) {
-            throw new IllegalArgumentException("Could not find Artifactpry server. Please check the Artifactory server in the task configuration.");
+        ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(genericContext.getSelectedServerId());
+        if (artifactoryServer == null) {
+            throw new IllegalArgumentException("Could not find Artifactpry server. " +
+                    "Please check the Artifactory server in the task configuration.");
         }
-        String username = overrideParam(serverConfigManager.substituteVariables(genericContext.getUsername()), BuildParamsOverrideManager.OVERRIDE_ARTIFACTORY_RESOLVER_USERNAME);
+        String username = overrideParam(artifactoryAdminService.substituteVariables(genericContext.getUsername()),
+                BuildParamsOverrideManager.OVERRIDE_ARTIFACTORY_RESOLVER_USERNAME);
         if (StringUtils.isBlank(username)) {
-            username = serverConfigManager.substituteVariables(serverConfig.getUsername());
+            username = artifactoryAdminService.substituteVariables(artifactoryServer.getUsername());
         }
-        String password = overrideParam(serverConfigManager.substituteVariables(genericContext.getPassword()), BuildParamsOverrideManager.OVERRIDE_ARTIFACTORY_RESOLVER_PASSWORD);
+        String password = overrideParam(artifactoryAdminService.substituteVariables(genericContext.getPassword()),
+                BuildParamsOverrideManager.OVERRIDE_ARTIFACTORY_RESOLVER_PASSWORD);
         if (StringUtils.isBlank(password)) {
-            password = serverConfigManager.substituteVariables(serverConfig.getPassword());
+            password = artifactoryAdminService.substituteVariables(artifactoryServer.getPassword());
         }
-        String serverUrl = serverConfigManager.substituteVariables(serverConfig.getUrl());
+        String serverUrl = artifactoryAdminService.substituteVariables(artifactoryServer.getServerUrl());
         return new ArtifactoryDependenciesClient(serverUrl, username, password, new BambooBuildInfoLog(log));
     }
 

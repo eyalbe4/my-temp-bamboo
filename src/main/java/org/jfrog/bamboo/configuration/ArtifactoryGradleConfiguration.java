@@ -8,8 +8,8 @@ import com.atlassian.bamboo.task.TaskDefinition;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jfrog.bamboo.admin.ServerConfig;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.context.GradleBuildContext;
 
@@ -26,8 +26,8 @@ public class ArtifactoryGradleConfiguration extends AbstractArtifactoryConfigura
 
     private static final Set<String> FIELDS_TO_COPY = GradleBuildContext.getFieldsToCopy();
 
-    public ArtifactoryGradleConfiguration(ServerConfigManager serverConfigManager) {
-        super(GradleBuildContext.PREFIX, serverConfigManager);
+    public ArtifactoryGradleConfiguration(ArtifactoryAdminService artifactoryAdminService) {
+        super(GradleBuildContext.PREFIX, artifactoryAdminService);
     }
 
     @Override
@@ -41,7 +41,6 @@ public class ArtifactoryGradleConfiguration extends AbstractArtifactoryConfigura
         Plan plan = (Plan) context.get("plan");
         context.put("build", plan);
         context.put("dummyList", Lists.newArrayList());
-        context.put("serverConfigManager", serverConfigManager);
         context.put("selectedServerId", -1);
         context.put("selectedResolutionRepoKey", "");
         context.put("selectedPublishingRepoKey", "");
@@ -70,7 +69,6 @@ public class ArtifactoryGradleConfiguration extends AbstractArtifactoryConfigura
         context.put("selectedPublishingRepoKey", selectedPublishingRepoKey);
         GradleBuildContext buildContext = GradleBuildContext.createGradleContextFromMap(context);
         context.put("hasTests", buildContext.isTestChecked());
-        context.put("serverConfigManager", serverConfigManager);
         String envVarsExcludePatterns = (String) context.get(AbstractBuildContext.ENV_VARS_EXCLUDE_PATTERNS);
         if (envVarsExcludePatterns == null) {
             context.put(AbstractBuildContext.ENV_VARS_EXCLUDE_PATTERNS, "*password*,*secret*");
@@ -81,12 +79,11 @@ public class ArtifactoryGradleConfiguration extends AbstractArtifactoryConfigura
     public void populateContextForView(@NotNull Map<String, Object> context, @NotNull TaskDefinition taskDefinition) {
         super.populateContextForView(context, taskDefinition);
         taskConfiguratorHelper.populateContextWithConfiguration(context, taskDefinition, FIELDS_TO_COPY);
-        context.put("serverConfigManager", serverConfigManager);
         GradleBuildContext buildContext = GradleBuildContext.createGradleContextFromMap(context);
-        long serverId = buildContext.getArtifactoryServerId();
+        int serverId = buildContext.getArtifactoryServerId();
         context.put("selectedServerId", serverId);
-        ServerConfig serverConfig = serverConfigManager.getServerConfigById(serverId);
-        context.put("selectedServerUrl", serverConfig.getUrl());
+        ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(serverId);
+        context.put("selectedServerUrl", artifactoryServer.getServerUrl());
         context.put("hasTests", buildContext.isTestChecked());
         context.put("isPublishArtifacts", buildContext.isPublishArtifacts());
         context.put("isUseM2CompatiblePatterns", buildContext.isMaven2Compatible());

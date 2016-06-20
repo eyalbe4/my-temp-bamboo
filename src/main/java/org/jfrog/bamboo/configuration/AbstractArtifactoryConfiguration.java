@@ -18,11 +18,12 @@ import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jfrog.bamboo.admin.ServerConfig;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.util.ConstantValues;
 import org.jfrog.bamboo.util.TaskUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -32,8 +33,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Base class for all {@link com.atlassian.bamboo.task.TaskConfigurator}s that are used by the plugin. It sets the
- * {@link ServerConfigManager} to be used for populating the Artifactory relevant fields. It also serves as a common
+ * Base class for all {@link com.atlassian.bamboo.task.TaskConfigurator}s that are used by the plugin. It uses
+ * {@link ArtifactoryAdminService} for populating the Artifactory relevant fields. It also serves as a common
  * ground for setting common fields in the context of the build.
  *
  * @author Tomer Cohen
@@ -41,7 +42,8 @@ import java.util.Set;
 public abstract class AbstractArtifactoryConfiguration extends AbstractTaskConfigurator implements
         TaskTestResultsSupport, BuildTaskRequirementSupport {
 
-    protected EncryptionService encryptionService = ComponentAccessor.ENCRYPTION_SERVICE.get();
+    protected EncryptionService encryptionService;
+    protected ArtifactoryAdminService artifactoryAdminService;
 
     public static final String CFG_TEST_RESULTS_FILE_PATTERN_OPTION_CUSTOM = "customTestDirectory";
     public static final String CFG_TEST_RESULTS_FILE_PATTERN_OPTION_STANDARD = "standardTestDirectory";
@@ -51,24 +53,26 @@ public abstract class AbstractArtifactoryConfiguration extends AbstractTaskConfi
     public static final Map<String, String> SIGN_METHOD_MAP = ImmutableMap.of(
             "false", "Don't Sign", "true", "Sign");
     public static final String SIGN_METHOD_MAP_KEY = "signMethods";
-    protected transient ServerConfigManager serverConfigManager;
     protected AdministrationConfiguration administrationConfiguration;
     protected UIConfigSupport uiConfigSupport;
     private String builderContextPrefix;
     private String capabilityPrefix;
 
-    protected AbstractArtifactoryConfiguration(ServerConfigManager serverConfigManager) {
-        this(null, null, serverConfigManager);
+    protected AbstractArtifactoryConfiguration(ArtifactoryAdminService artifactoryAdminService) {
+        this(null, null, artifactoryAdminService);
     }
 
-    protected AbstractArtifactoryConfiguration(String builderContextPrefix, ServerConfigManager serverConfigManager) {
-        this(builderContextPrefix, null, serverConfigManager);
+    protected AbstractArtifactoryConfiguration(String builderContextPrefix,
+                                               ArtifactoryAdminService artifactoryAdminService) {
+        this(builderContextPrefix, null, artifactoryAdminService);
     }
 
-    protected AbstractArtifactoryConfiguration(String builderContextPrefix, @Nullable String capabilityPrefix, ServerConfigManager serverConfigManager) {
+    protected AbstractArtifactoryConfiguration(String builderContextPrefix, @Nullable String capabilityPrefix,
+                                               ArtifactoryAdminService artifactoryAdminService) {
+        ContainerManager.autowireComponent("encryptionService");
+        this.artifactoryAdminService = artifactoryAdminService;
         this.builderContextPrefix = builderContextPrefix;
         this.capabilityPrefix = capabilityPrefix;
-        this.serverConfigManager = serverConfigManager;
         if (this.administrationConfiguration == null) {
             this.administrationConfiguration = new AdministrationConfigurationImpl(null);
         }
@@ -121,17 +125,17 @@ public abstract class AbstractArtifactoryConfiguration extends AbstractTaskConfi
         if (!params.containsKey(serverKey)) {
             return;
         }
-        long configuredServerId;
+        int configuredServerId;
         try {
-            configuredServerId = params.getLong(serverKey, -1);
+            configuredServerId = params.getInt(serverKey, -1);
         } catch (ConversionException ce) {
             configuredServerId = -1;
         }
         if (configuredServerId == -1) {
             return;
         }
-        ServerConfig serverConfig = serverConfigManager.getServerConfigById(configuredServerId);
-        if (serverConfig == null) {
+        ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(configuredServerId);
+        if (artifactoryServer == null) {
             errorCollection.addError(serverKey,
                     "Could not find Artifactory server configuration by the ID " + configuredServerId);
         }
@@ -233,7 +237,7 @@ public abstract class AbstractArtifactoryConfiguration extends AbstractTaskConfi
                 } catch (Exception ignore) {
                     /* Ignore. Trying to decode password that was not encoded. */
                 }
-                value = TaskUtils.decryptIfNeeded(value);
+                value = artifactoryAdminService.decryptIfNeeded(value);
                 if (enc) {
                     value = encryptionService.encrypt(value);
                     try {

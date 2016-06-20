@@ -20,12 +20,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.types.Commandline;
 import org.jetbrains.annotations.NotNull;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.admin.BintrayConfiguration;
-import org.jfrog.bamboo.admin.ServerConfig;
-import org.jfrog.bamboo.admin.ServerConfigManager;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.build.api.BuildInfoConfigProperties;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,15 +38,20 @@ import java.util.Map;
  * @author Tomer Cohen
  */
 public class TaskUtils {
-    private static EncryptionService encryptionService = null;
+    @Autowired
+    private EncryptionService encryptionService;
+    @Autowired
+    private ArtifactoryAdminService artifactoryAdminService;
     private static final char PROPERTIES_DELIMITER = ';';
     private static final char KEY_VALUE_SEPARATOR = '=';
+
     /* This is the name of the "Download Artifacts" task in bamboo, we are looking it up as downloading artifacts is a pre condition to our task */
     private static final String DOWNLOAD_ARTIFACTS_TASK_KEY = "com.atlassian.bamboo.plugins.bamboo-artifact-downloader-plugin:artifactdownloadertask";
-
-    private static void initEncryptionService() {
-        encryptionService = ComponentAccessor.ENCRYPTION_SERVICE.get();
-    }
+//
+//    private static void initEncryptionService() {
+//        encryptionService = ComponentAccessor.ENCRYPTION_SERVICE.get();
+//    ContainerManager.getComponent("encryptionService")
+//    }
 
     /**
      * Get an escaped version of the environment map that is to be passed onwards to the extractors. Bamboo escapes the
@@ -171,36 +177,35 @@ public class TaskUtils {
      * @param plan server config for this plan
      * @return ServerConfig object with Artifactory details
      */
-    public static ServerConfig getArtifactoryServerConfig(ImmutablePlan plan) {
+    public ArtifactoryServer getArtifactoryServerConfig(ImmutablePlan plan) {
         TaskDefinition mavenOrGradleTaskDefinition = TaskDefinitionHelper.getPushToBintrayEnabledTaskDefinition(plan);
         String serverIdStr = TaskUtils.getSelectedServerId(mavenOrGradleTaskDefinition);
         if (StringUtils.isNotEmpty(serverIdStr)) {
-            long serverId = Long.parseLong(serverIdStr);
-            return ((ServerConfigManager) ContainerManager.getComponent(
-                    ConstantValues.PLUGIN_CONFIG_MANAGER_KEY)).getServerConfigById(serverId);
+            Integer serverId = Integer.parseInt(serverIdStr);
+            return artifactoryAdminService.getArtifactoryServer(serverId);
         }
         throw new IllegalStateException("Error while trying to create ArtifactoryBuildInfoClient");
     }
 
-    public static ArtifactoryBuildInfoClient createClient(ServerConfigManager serverConfigManager, ServerConfig serverConfig,
+    public ArtifactoryBuildInfoClient createClient(ArtifactoryServer artifactoryServer,
                                                           AbstractBuildContext context, Logger log) {
-        String serverUrl = substituteVariables(serverConfigManager, serverConfig.getUrl());
-        String username = substituteVariables(serverConfigManager, context.getDeployerUsername());
+        String serverUrl = substituteVariables(artifactoryServer.getServerUrl());
+        String username = substituteVariables(context.getDeployerUsername());
         if (StringUtils.isBlank(username)) {
-            username = substituteVariables(serverConfigManager, serverConfig.getUsername());
+            username = substituteVariables(artifactoryServer.getUsername());
         }
         ArtifactoryBuildInfoClient client;
         BambooBuildInfoLog bambooLog = new BambooBuildInfoLog(log);
         if (StringUtils.isBlank(username)) {
             client = new ArtifactoryBuildInfoClient(serverUrl, bambooLog);
         } else {
-            String password = substituteVariables(serverConfigManager, context.getDeployerPassword());
+            String password = substituteVariables(context.getDeployerPassword());
             if (StringUtils.isBlank(password)) {
-                password = substituteVariables(serverConfigManager, serverConfig.getPassword());
+                password = substituteVariables(artifactoryServer.getPassword());
             }
             client = new ArtifactoryBuildInfoClient(serverUrl, username, password, bambooLog);
         }
-        client.setConnectionTimeout(serverConfig.getTimeout());
+        client.setConnectionTimeout(artifactoryServer.getTimeout());
         return client;
     }
 
@@ -221,24 +226,19 @@ public class TaskUtils {
     /**
      * Substitute (replace) Bamboo variable names with their defined values
      */
-    private static String substituteVariables(ServerConfigManager serverConfigManager, String s) {
-        return s != null ? serverConfigManager.substituteVariables(s) : null;
+    private String substituteVariables(String s) {
+        return s != null ? artifactoryAdminService.substituteVariables(s) : null;
     }
 
-    public static String decryptIfNeeded(String s) {
-        if (encryptionService == null) {
-            initEncryptionService();
-        }
-        try {
-            s = encryptionService.decrypt(s);
-        } catch (EncryptionException e) { /* Ignore. The field may not be encrypted. */ }
-        return s;
-    }
+//    public String decryptIfNeeded(String s) {
+//        try {
+//            s = encryptionService.decrypt(s);
+//        } catch (EncryptionException e) { /* Ignore. The field may not be encrypted. */ }
+//        return s;
+//    }
 
-    public static BintrayConfiguration getBintrayConfig() {
-        ServerConfigManager serverConfigManager = (ServerConfigManager) ContainerManager.getComponent(
-                ConstantValues.PLUGIN_CONFIG_MANAGER_KEY);
-        return serverConfigManager.getBintrayConfig();
+    public BintrayConfiguration getBintrayConfig() throws IOException {
+        return artifactoryAdminService.getBintrayConfig(false);
     }
 
     public static String getBintrayUrl() {

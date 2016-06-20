@@ -5,7 +5,7 @@ import com.atlassian.bamboo.task.TaskDefinition;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
 import org.jfrog.bamboo.context.GenericContext;
 import org.jfrog.bamboo.context.IvyBuildContext;
 
@@ -20,16 +20,16 @@ import java.util.Set;
 public class ArtifactoryGenericResolveConfiguration extends AbstractArtifactoryConfiguration {
     private static final Set<String> FIELDS_TO_COPY = GenericContext.getFieldsToCopy();
 
-    public ArtifactoryGenericResolveConfiguration(ServerConfigManager serverConfigManager) {
-        super(serverConfigManager);
+    public ArtifactoryGenericResolveConfiguration(ArtifactoryAdminService artifactoryAdminService) {
+        super(artifactoryAdminService);
     }
 
     @Override
     public void populateContextForCreate(@NotNull Map<String, Object> context) {
         super.populateContextForCreate(context);
+        context.put("artifactoryServers", artifactoryAdminService.getServersMap());
         context.put("build", context.get("plan"));
         context.put("dummyList", Lists.newArrayList());
-        context.put("serverConfigManager", serverConfigManager);
         context.put("selectedServerId", -1);
         context.put("selectedRepoKey", "");
     }
@@ -45,14 +45,14 @@ public class ArtifactoryGenericResolveConfiguration extends AbstractArtifactoryC
                 IvyBuildContext.NO_PUBLISHING_REPO_KEY_CONFIGURED;
         context.put("selectedRepoKey", selectedPublishingRepoKey);
         context.put("selectedServerId", context.get(GenericContext.PREFIX + GenericContext.SERVER_ID_PARAM));
-        context.put("serverConfigManager", serverConfigManager);
+        context.put("artifactoryServers", artifactoryAdminService.getServersMap());
     }
 
     @Override
     public void populateContextForView(@NotNull Map<String, Object> context, @NotNull TaskDefinition taskDefinition) {
         super.populateContextForView(context, taskDefinition);
         taskConfiguratorHelper.populateContextWithConfiguration(context, taskDefinition, FIELDS_TO_COPY);
-        context.put("serverConfigManager", serverConfigManager);
+        context.put("artifactoryServers", artifactoryAdminService.getServersMap());
         IvyBuildContext buildContext = IvyBuildContext.createIvyContextFromMap(context);
         long serverId = buildContext.getArtifactoryServerId();
         context.put("selectedServerId", serverId);

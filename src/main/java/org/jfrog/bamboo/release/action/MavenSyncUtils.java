@@ -6,12 +6,13 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jfrog.bamboo.admin.ServerConfig;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.util.ConstantValues;
 import org.jfrog.bamboo.util.TaskUtils;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,11 +26,11 @@ public class MavenSyncUtils {
 
     private static final Logger log = Logger.getLogger(MavenSyncUtils.class);
     private static final String NEXUS_PUSH_PLUGIN_NAME = "bintrayOsoPush";
+    @Autowired
+    private ArtifactoryAdminService artifactoryAdminService;
 
-    public static boolean isPushToNexusEnabled(ServerConfigManager serverConfigManager, TaskDefinition definition,
+    public boolean isPushToNexusEnabled(TaskDefinition definition,
                                                String serverId) {
-        ServerConfigManager component = (ServerConfigManager) ContainerManager.getComponent(
-                ConstantValues.PLUGIN_CONFIG_MANAGER_KEY);
         if (definition == null) {
             return false;
         }
@@ -37,14 +38,15 @@ public class MavenSyncUtils {
             log.error("No special promotion modes enabled: no selected Artifactory server Id.");
             return false;
         }
-        ServerConfig serverConfig = component.getServerConfigById(Long.parseLong(serverId));
-        if (serverConfig == null) {
+        ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(Integer.parseInt(serverId));
+        if (artifactoryServer == null) {
             log.error("No special promotion modes enabled: error while retrieving querying for enabled user plugins: " +
                     "could not find Artifactory server configuration by the ID " + serverId);
             return false;
         }
+        TaskUtils taskUtils = new TaskUtils();
         AbstractBuildContext context = AbstractBuildContext.createContextFromMap(definition.getConfiguration());
-        ArtifactoryBuildInfoClient client = TaskUtils.createClient(serverConfigManager, serverConfig, context, log);
+        ArtifactoryBuildInfoClient client = taskUtils.createClient(artifactoryServer, context, log);
         try {
             Map<String, List<Map>> userPluginInfo = client.getUserPluginInfo();
             if (!userPluginInfo.containsKey("promotions")) {
@@ -53,7 +55,6 @@ public class MavenSyncUtils {
             }
             List<Map> executionPlugins = userPluginInfo.get("promotions");
             Iterables.find(executionPlugins, new Predicate<Map>() {
-                @Override
                 public boolean apply(Map pluginInfo) {
                     if ((pluginInfo != null) && pluginInfo.containsKey("name")) {
                         String pluginName = pluginInfo.get("name").toString();

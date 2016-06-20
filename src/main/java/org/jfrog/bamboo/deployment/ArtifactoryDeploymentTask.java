@@ -11,8 +11,8 @@ import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.jfrog.bamboo.admin.ServerConfig;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.util.BambooBuildInfoLog;
 import org.jfrog.bamboo.util.TaskUtils;
@@ -39,20 +39,20 @@ public class ArtifactoryDeploymentTask implements DeploymentTaskType {
     private String artifactsRootDirectory;
     private BuildLogger buildLogger;
     private ArtifactoryBuildInfoClient client;
+    private ArtifactoryAdminService artifactoryAdminService;
 
     @NotNull
 //    @Override
     public TaskResult execute(@NotNull DeploymentTaskContext deploymentTaskContext) throws TaskException {
 
         buildLogger = deploymentTaskContext.getBuildLogger();
-        ServerConfigManager serverConfigManager = ServerConfigManager.getInstance();
         String serverId = deploymentTaskContext.getConfigurationMap().get(ArtifactoryDeploymentConfiguration.DEPLOYMENT_PREFIX + AbstractBuildContext.SERVER_ID_PARAM);
         if (StringUtils.isBlank(serverId)) {
             // Compatibility with version 1.8.0
             serverId = deploymentTaskContext.getConfigurationMap().get("artifactoryServerId");
         }
-        ServerConfig serverConfig = serverConfigManager.getServerConfigById(Long.parseLong(serverId));
-        if (serverConfig == null) {
+        ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(Integer.parseInt(serverId));
+        if (artifactoryServer == null) {
             buildLogger.addErrorLogEntry("Could not find Artifactpry server. Please check the Artifactory server in the task configuration.");
             return TaskResultBuilder.newBuilder(deploymentTaskContext).failedWithError().build();
         }
@@ -70,11 +70,11 @@ public class ArtifactoryDeploymentTask implements DeploymentTaskType {
         // If deployer credentials were not configured in the task configuration, use the credentials configured
         // globally
         if (StringUtils.isBlank(username) && StringUtils.isBlank(password)) {
-            username = serverConfig.getUsername();
-            password = serverConfig.getPassword();
+            username = artifactoryServer.getUsername();
+            password = artifactoryServer.getPassword();
         }
         TaskResult result;
-        client = new ArtifactoryBuildInfoClient(serverConfig.getUrl(),
+        client = new ArtifactoryBuildInfoClient(artifactoryServer.getServerUrl(),
                 username, password, new BambooBuildInfoLog(log));
 
         try {

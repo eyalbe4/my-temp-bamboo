@@ -29,7 +29,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jfrog.bamboo.admin.ServerConfig;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.configuration.BuildParamsOverrideManager;
 import org.jfrog.bamboo.context.GradleBuildContext;
 import org.jfrog.bamboo.util.ConfigurationPathHolder;
@@ -61,11 +61,11 @@ public class GradleInitScriptHelper extends BaseBuildInfoHelper {
                                                                     GradleBuildContext buildContext, BuildLogger logger, String scriptTemplate,
                                                                     Map<String, String>taskEnv, Map<String, String> generalEnv, String artifactoryPluginVersion) {
 
-        long selectedServerId = buildContext.getArtifactoryServerId();
+        int selectedServerId = buildContext.getArtifactoryServerId();
         if (selectedServerId != -1) {
             //Using "getInstance()" since the field must be transient
-            ServerConfig serverConfig = serverConfigManager.getServerConfigById(selectedServerId);
-            if (serverConfig == null) {
+            ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(selectedServerId);
+            if (artifactoryServer == null) {
 
                 String warningMessage =
                         "Found an ID of a selected Artifactory server configuration (" + selectedServerId +
@@ -79,7 +79,7 @@ public class GradleInitScriptHelper extends BaseBuildInfoHelper {
                 try {
                     File buildProps = File.createTempFile("buildinfo", "properties");
                     ArtifactoryClientConfiguration configuration =
-                            createClientConfiguration(buildContext, serverConfig, taskEnv, artifactoryPluginVersion);
+                            createClientConfiguration(buildContext, artifactoryServer, taskEnv, artifactoryPluginVersion);
                     // Add Bamboo build variables
                     MapDifference<String, String> buildVarDifference = Maps.difference(generalEnv, System.getenv());
                     Map<String, String> filteredBuildVarDifferences = buildVarDifference.entriesOnlyOnLeft();
@@ -95,7 +95,7 @@ public class GradleInitScriptHelper extends BaseBuildInfoHelper {
                         this.context.getBuildResult().getCustomBuildData().put(BUILD_RESULT_COLLECTION_ACTIVATED_PARAM,
                                 "true");
                         this.context.getBuildResult().getCustomBuildData().put(BUILD_RESULT_SELECTED_SERVER_PARAM,
-                                serverConfig.getUrl());
+                                artifactoryServer.getServerUrl());
                         this.context.getBuildResult().getCustomBuildData().put(BUILD_RESULT_RELEASE_ACTIVATED_PARAM,
                                 String.valueOf(buildContext.releaseManagementContext.isActivateReleaseManagement()));
                     }
@@ -112,7 +112,7 @@ public class GradleInitScriptHelper extends BaseBuildInfoHelper {
     }
 
     private ArtifactoryClientConfiguration createClientConfiguration(GradleBuildContext buildContext,
-                                                                     ServerConfig serverConfig, Map<String, String> taskEnv, String artifactoryPluginVersion) {
+                                                                     ArtifactoryServer artifactoryServer, Map<String, String> taskEnv, String artifactoryPluginVersion) {
 
         ArtifactoryClientConfiguration clientConf = new ArtifactoryClientConfiguration(new NullLog());
         String buildName = context.getPlanName();
@@ -176,7 +176,7 @@ public class GradleInitScriptHelper extends BaseBuildInfoHelper {
 
         clientConf.info.setReleaseEnabled(buildContext.releaseManagementContext.isActivateReleaseManagement());
         clientConf.info.setReleaseComment(buildContext.releaseManagementContext.getStagingComment());
-        addClientProperties(clientConf, serverConfig, buildContext, taskEnv);
+        addClientProperties(clientConf, artifactoryServer, buildContext, taskEnv);
         clientConf.setIncludeEnvVars(buildContext.isIncludeEnvVars());
         clientConf.setEnvVarsIncludePatterns(buildContext.getEnvVarsIncludePatterns());
         clientConf.setEnvVarsExcludePatterns(buildContext.getEnvVarsExcludePatterns());
@@ -230,10 +230,10 @@ public class GradleInitScriptHelper extends BaseBuildInfoHelper {
         }
     }
 
-    private void addClientProperties(ArtifactoryClientConfiguration clientConf, ServerConfig serverConfig,
+    private void addClientProperties(ArtifactoryClientConfiguration clientConf, ArtifactoryServer artifactoryServer,
         GradleBuildContext buildContext, Map<String, String> environment) {
 
-        String serverUrl = serverConfigManager.substituteVariables(serverConfig.getUrl());
+        String serverUrl = artifactoryAdminService.substituteVariables(artifactoryServer.getServerUrl());
         clientConf.publisher.setContextUrl(serverUrl);
         clientConf.resolver.setContextUrl(serverUrl);
         clientConf.publisher.setRepoKey(getPublishingRepoKey(buildContext, environment));
@@ -244,17 +244,17 @@ public class GradleInitScriptHelper extends BaseBuildInfoHelper {
             clientConf.resolver.setRepoKey(resolutionRepo);
         }
 
-        String globalServerUsername = serverConfigManager.substituteVariables(serverConfig.getUsername());
-        String globalServerPassword = serverConfigManager.substituteVariables(serverConfig.getPassword());
+        String globalServerUsername = artifactoryAdminService.substituteVariables(artifactoryServer.getUsername());
+        String globalServerPassword = artifactoryAdminService.substituteVariables(artifactoryServer.getPassword());
         clientConf.resolver.setUsername(globalServerUsername);
         clientConf.resolver.setPassword(globalServerPassword);
 
-        String deployerUsername = overrideParam(serverConfigManager.substituteVariables(buildContext.getDeployerUsername())
+        String deployerUsername = overrideParam(artifactoryAdminService.substituteVariables(buildContext.getDeployerUsername())
                 , BuildParamsOverrideManager.OVERRIDE_ARTIFACTORY_DEPLOYER_USERNAME);
         if (StringUtils.isBlank(deployerUsername)) {
             deployerUsername = globalServerUsername;
         }
-        String deployerPassword = overrideParam(serverConfigManager.substituteVariables(buildContext.getDeployerPassword())
+        String deployerPassword = overrideParam(artifactoryAdminService.substituteVariables(buildContext.getDeployerPassword())
                 , BuildParamsOverrideManager.OVERRIDE_ARTIFACTORY_DEPLOYER_PASSWORD);
         if (StringUtils.isBlank(deployerPassword)) {
             deployerPassword = globalServerPassword;

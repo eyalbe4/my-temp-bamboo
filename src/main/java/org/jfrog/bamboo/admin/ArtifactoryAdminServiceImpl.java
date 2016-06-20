@@ -72,6 +72,14 @@ public class ArtifactoryAdminServiceImpl implements ArtifactoryAdminService {
 		return newArrayList(activeObjects.find(ArtifactoryServer.class));
 	}
 
+	public Map<String, String> getServersMap() {
+		Map<String, String> artifactoryServers = new HashMap<String, String>();
+		for (ArtifactoryServer artifactoryServer : getAllArtifactoryServers()) {
+			artifactoryServers.put(String.valueOf(artifactoryServer.getID()), artifactoryServer.getServerUrl());
+		}
+		return artifactoryServers;
+	}
+
 	public ArtifactoryServer updateArtifactoryServer(final int id, final String serverUrl,
 	                                                 final String username, final String password, final int timeout) {
 		log.debug("Updating Artifactory configuration. "+ id +
@@ -124,8 +132,8 @@ public class ArtifactoryAdminServiceImpl implements ArtifactoryAdminService {
 		HashMap<String, String> map =
 				new ObjectMapper().readValue(bintrayConfigJson.getBintrayConfigJson(), HashMap.class);
 		if (decryptConfig) {
-			map.put("bintrayPassword", TaskUtils.decryptIfNeeded(map.get("bintrayPassword"))) ;
-			map.put("sonatypePassword", TaskUtils.decryptIfNeeded(map.get("sonatypePassword")));
+			map.put("bintrayPassword", decryptIfNeeded(map.get("bintrayPassword"))) ;
+			map.put("sonatypePassword", decryptIfNeeded(map.get("sonatypePassword")));
 		}
 		return map;
 	}
@@ -148,7 +156,7 @@ public class ArtifactoryAdminServiceImpl implements ArtifactoryAdminService {
 		String password;
 		if (StringUtils.isNotBlank(req.getParameter("user")) && StringUtils.isNotBlank(req.getParameter("password"))) {
 			username = substituteVariables(req.getParameter("user"));
-			password = substituteVariables(TaskUtils.decryptIfNeeded(req.getParameter("password")));
+			password = substituteVariables(decryptIfNeeded(req.getParameter("password")));
 		} else {
 			username = substituteVariables(artifactoryServer.getUsername());
 			password = substituteVariables(artifactoryServer.getPassword());
@@ -217,7 +225,7 @@ public class ArtifactoryAdminServiceImpl implements ArtifactoryAdminService {
 			password = req.getParameter("password");
 		}
 		if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
-			password = TaskUtils.decryptIfNeeded(password);
+			password = decryptIfNeeded(password);
 		} else {
 			username = artifactoryServer.getUsername();
 			password = artifactoryServer.getPassword();
@@ -321,5 +329,12 @@ public class ArtifactoryAdminServiceImpl implements ArtifactoryAdminService {
 
 	public void setCustomVariableContext(CustomVariableContext customVariableContext) {
 		this.customVariableContext = customVariableContext;
+	}
+
+	public String decryptIfNeeded(String s) {
+		try {
+			s = encryptionService.decrypt(s);
+		} catch (EncryptionException e) { /* Ignore. The field may not be encrypted. */ }
+		return s;
 	}
 }

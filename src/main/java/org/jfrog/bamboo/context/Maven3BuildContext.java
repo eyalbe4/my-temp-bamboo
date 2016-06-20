@@ -63,12 +63,12 @@ public class Maven3BuildContext extends AbstractBuildContext {
         return Boolean.parseBoolean(env.get(RESOLVE_FROM_ARTIFACTORY));
     }
 
-    public long getResolutionArtifactoryServerId() {
+    public int getResolutionArtifactoryServerId() {
         String serverId = env.get(PREFIX + RESOLUTION_SERVER_ID);
         if (StringUtils.isBlank(serverId)) {
             return -1;
         }
-        return Long.parseLong(serverId);
+        return Integer.parseInt(serverId);
     }
 
     public String getResolverUserName() {

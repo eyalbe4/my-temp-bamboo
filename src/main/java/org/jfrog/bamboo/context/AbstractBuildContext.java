@@ -136,12 +136,12 @@ public abstract class AbstractBuildContext {
                 BLACKDUCK_PREFIX + AutoDiscardStaleComponentRequests);
     }
 
-    public long getArtifactoryServerId() {
+    public int getArtifactoryServerId() {
         String serverId = env.get(prefix + SERVER_ID_PARAM);
         if (StringUtils.isBlank(serverId)) {
             return -1;
         }
-        return Long.parseLong(serverId);
+        return Integer.parseInt(serverId);
     }
 
     public String getBaseUrl() {

@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
 import org.jfrog.bamboo.context.GenericContext;
 import org.jfrog.bamboo.context.IvyBuildContext;
 
@@ -22,8 +22,8 @@ import java.util.Set;
 public class ArtifactoryGenericBuildConfiguration extends AbstractArtifactoryConfiguration {
     private static final Set<String> FIELDS_TO_COPY = GenericContext.getFieldsToCopy();
 
-    public ArtifactoryGenericBuildConfiguration(ServerConfigManager serverConfigManager) {
-        super(serverConfigManager);
+    public ArtifactoryGenericBuildConfiguration(ArtifactoryAdminService artifactoryAdminService) {
+        super(artifactoryAdminService);
     }
 
     @Override
@@ -31,7 +31,6 @@ public class ArtifactoryGenericBuildConfiguration extends AbstractArtifactoryCon
         super.populateContextForCreate(context);
         context.put("build", context.get("plan"));
         context.put("dummyList", Lists.newArrayList());
-        context.put("serverConfigManager", serverConfigManager);
         context.put("selectedServerId", -1);
         context.put("selectedRepoKey", StringUtils.EMPTY);
         context.put(GenericContext.PUBLISH_BUILD_INFO, "true");
@@ -53,7 +52,6 @@ public class ArtifactoryGenericBuildConfiguration extends AbstractArtifactoryCon
         context.put("selectedRepoKey", selectedPublishingRepoKey);
         context.put("selectedServerId", context.get(GenericContext.PREFIX + GenericContext.SERVER_ID_PARAM));
         context.put(GenericContext.SIGN_METHOD_MAP_KEY, GenericContext.SIGN_METHOD_MAP);
-        context.put("serverConfigManager", serverConfigManager);
         String envVarsExcludePatterns = (String)context.get(GenericContext.ENV_VARS_EXCLUDE_PATTERNS);
         if (envVarsExcludePatterns == null) {
             context.put(GenericContext.ENV_VARS_EXCLUDE_PATTERNS, "*password*,*secret*");
@@ -64,7 +62,6 @@ public class ArtifactoryGenericBuildConfiguration extends AbstractArtifactoryCon
     public void populateContextForView(@NotNull Map<String, Object> context, @NotNull TaskDefinition taskDefinition) {
         super.populateContextForView(context, taskDefinition);
         taskConfiguratorHelper.populateContextWithConfiguration(context, taskDefinition, FIELDS_TO_COPY);
-        context.put("serverConfigManager", serverConfigManager);
         IvyBuildContext buildContext = IvyBuildContext.createIvyContextFromMap(context);
         long serverId = buildContext.getArtifactoryServerId();
         context.put("selectedServerId", serverId);

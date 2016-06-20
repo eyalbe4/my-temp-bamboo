@@ -34,7 +34,7 @@
                 ${artifactroryServer.username}
                 </td>
                 <td>
-                ${artifactroryServerer.timeout}
+                ${artifactroryServer.timeout}
                 </td>
                 <td class="operations">
                     <a id="editServer-${artifactroryServer.ID}"

@@ -1,7 +1,7 @@
 package org.jfrog.bamboo.util;
 
 import org.apache.commons.lang.StringUtils;
-import org.jfrog.bamboo.admin.ServerConfig;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.builder.ArtifactoryBuildInfoPropertyHelper;
 import org.jfrog.bamboo.configuration.BuildParamsOverrideManager;
 import org.jfrog.bamboo.context.AbstractBuildContext;
@@ -19,7 +19,7 @@ public class MavenPropertyHelper extends ArtifactoryBuildInfoPropertyHelper {
 
     @Override
     protected void addClientProperties(AbstractBuildContext builder, ArtifactoryClientConfiguration clientConf,
-                                       ServerConfig serverConfig, Map<String, String> environment) {
+                                       ArtifactoryServer artifactoryServer, Map<String, String> environment) {
 
         Maven3BuildContext buildContext = (Maven3BuildContext) builder;
 
@@ -28,11 +28,11 @@ public class MavenPropertyHelper extends ArtifactoryBuildInfoPropertyHelper {
         String resolutionRepo = overrideParam(buildContext.getResolutionRepo(), BuildParamsOverrideManager.OVERRIDE_ARTIFACTORY_RESOLVE_REPO);
         if (buildContext.isResolveFromArtifactory() && StringUtils.isNotBlank(resolutionRepo) &&
                 !AbstractBuildContext.NO_RESOLUTION_REPO_KEY_CONFIGURED.equals(resolutionRepo)) {
-            long serverId = buildContext.getResolutionArtifactoryServerId();
+            int serverId = buildContext.getResolutionArtifactoryServerId();
             if (serverId > -1) {
-                ServerConfig resolutionServerConfig = serverConfigManager.getServerConfigById(serverId);
+                ArtifactoryServer resolutionServerConfig = artifactoryAdminService.getArtifactoryServer(serverId);
                 if (resolutionServerConfig != null) {
-                    clientConf.resolver.setContextUrl(resolutionServerConfig.getUrl());
+                    clientConf.resolver.setContextUrl(resolutionServerConfig.getServerUrl());
                     clientConf.resolver.setRepoKey(resolutionRepo);
                     String username = buildContext.getResolverUserName();
                     username = overrideParam(username, BuildParamsOverrideManager.OVERRIDE_ARTIFACTORY_RESOLVER_USERNAME);

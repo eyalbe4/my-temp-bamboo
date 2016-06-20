@@ -44,7 +44,7 @@ public class GenericContext {
         return fieldsToCopy;
     }
 
-    public long getSelectedServerId() {
+    public int getSelectedServerId() {
         String serverId = env.get(PREFIX + SERVER_ID_PARAM);
         if (StringUtils.isBlank(serverId)) {
             // In version 1.8.1 the key containing the Artifactory Server ID was changed
@@ -55,7 +55,7 @@ public class GenericContext {
         if (StringUtils.isBlank(serverId)) {
             return -1;
         }
-        return Long.parseLong(serverId);
+        return Integer.parseInt(serverId);
     }
 
     public String getRepoKey() {

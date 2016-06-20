@@ -27,13 +27,14 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
 import org.jfrog.bamboo.configuration.BuildParamsOverrideManager;
 import org.jfrog.bamboo.configuration.ConfigurationHelper;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.build.api.BuildInfoConfigProperties;
 import org.jfrog.build.extractor.BuildInfoExtractorUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.io.File;
@@ -53,16 +54,16 @@ public abstract class BaseBuildInfoHelper {
     private static final Logger log = Logger.getLogger(BaseBuildInfoHelper.class);
 
     protected BuildContext context;
-    protected ServerConfigManager serverConfigManager;
     protected AdministrationConfiguration administrationConfiguration;
     protected AdministrationConfigurationAccessor administrationConfigurationAccessor;
     private HttpClient httpClient;
     protected String bambooBaseUrl;
     protected BuildParamsOverrideManager buildParamsOverrideManager;
+    @Autowired
+    protected ArtifactoryAdminService artifactoryAdminService;
 
     public void init(BuildParamsOverrideManager buildParamsOverrideManager, BuildContext context) {
         this.context = context;
-        serverConfigManager = ServerConfigManager.getInstance();
         ContainerManager.autowireComponent(this);
         httpClient = new HttpClient();
         bambooBaseUrl = determineBambooBaseUrl();

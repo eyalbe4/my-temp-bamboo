@@ -9,8 +9,8 @@ import com.atlassian.bamboo.v2.build.agent.capability.CapabilityDefaultsHelper;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jfrog.bamboo.admin.ServerConfig;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.context.Maven3BuildContext;
 
@@ -26,8 +26,8 @@ public class ArtifactoryMaven3Configuration extends AbstractArtifactoryConfigura
     private static final Set<String> FIELDS_TO_COPY = Maven3BuildContext.getFieldsToCopy();
     private static final String DEFAULT_TEST_RESULTS_FILE_PATTERN = "**/target/surefire-reports/*.xml";
 
-    public ArtifactoryMaven3Configuration(ServerConfigManager serverConfigManager) {
-        super(Maven3BuildContext.PREFIX, CapabilityDefaultsHelper.CAPABILITY_BUILDER_PREFIX + ".maven", serverConfigManager);
+    public ArtifactoryMaven3Configuration(ArtifactoryAdminService artifactoryAdminService) {
+        super(Maven3BuildContext.PREFIX, CapabilityDefaultsHelper.CAPABILITY_BUILDER_PREFIX + ".maven", artifactoryAdminService);
     }
 
     @Override
@@ -40,7 +40,6 @@ public class ArtifactoryMaven3Configuration extends AbstractArtifactoryConfigura
         Plan plan = (Plan) context.get("plan");
         context.put("build", plan);
         context.put("dummyList", Lists.newArrayList());
-        context.put("serverConfigManager", serverConfigManager);
         context.put("testDirectoryOption", "standardTestDirectory");
         context.put("selectedServerId", -1);
         context.put("selectedRepoKey", "");
@@ -72,7 +71,6 @@ public class ArtifactoryMaven3Configuration extends AbstractArtifactoryConfigura
         context.put("selectedResolutionRepoKey", resolutionRepo);
         context.put("selectedServerId", buildContext.getArtifactoryServerId());
         context.put("hasTests", buildContext.isTestChecked());
-        context.put("serverConfigManager", serverConfigManager);
         String envVarsExcludePatterns = (String) context.get(AbstractBuildContext.ENV_VARS_EXCLUDE_PATTERNS);
         if (envVarsExcludePatterns == null) {
             context.put(AbstractBuildContext.ENV_VARS_EXCLUDE_PATTERNS, "*password*,*secret*");
@@ -88,15 +86,14 @@ public class ArtifactoryMaven3Configuration extends AbstractArtifactoryConfigura
         taskConfiguratorHelper.populateContextWithConfiguration(context, taskDefinition, FIELDS_TO_COPY);
         context.put("selectedRepoKey", selectedPublishingRepoKey);
         Maven3BuildContext buildContext = Maven3BuildContext.createMavenContextFromMap(context);
-        long serverId = buildContext.getArtifactoryServerId();
+        int serverId = buildContext.getArtifactoryServerId();
         context.put("selectedServerId", serverId);
-        ServerConfig serverConfig = serverConfigManager.getServerConfigById(serverId);
-        context.put("selectedServerUrl", serverConfig.getUrl());
+        ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(serverId);
+        context.put("selectedServerUrl", artifactoryServer.getServerUrl());
         context.put("isRunLicenseChecks", buildContext.isRunLicenseChecks());
         context.put("isPublishArtifacts", buildContext.isPublishArtifacts());
         context.put("isRecordAllDependencies", buildContext.isRecordAllDependencies());
         context.put("hasTests", buildContext.isTestChecked());
-        context.put("serverConfigManager", serverConfigManager);
     }
 
     @NotNull

@@ -6,7 +6,7 @@ import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
 import org.jfrog.bamboo.configuration.AbstractArtifactoryConfiguration;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 
@@ -25,8 +25,8 @@ public class ArtifactoryDeploymentConfiguration extends AbstractArtifactoryConfi
     public static final String PASSWORD = "password";
     public static final String USERNAME = "username";
 
-    public ArtifactoryDeploymentConfiguration(ServerConfigManager serverConfigManager) {
-        super(serverConfigManager);
+    public ArtifactoryDeploymentConfiguration(ArtifactoryAdminService artifactoryAdminService) {
+        super(artifactoryAdminService);
     }
 
     private static Set<String> getFieldsToCopy() {
@@ -41,7 +41,6 @@ public class ArtifactoryDeploymentConfiguration extends AbstractArtifactoryConfi
     @Override
     public void populateContextForCreate(@NotNull Map<String, Object> context) {
         super.populateContextForCreate(context);
-        context.put("serverConfigManager", serverConfigManager);
         context.put("selectedServerId", -1);
         context.put(AbstractBuildContext.SERVER_ID_PARAM, -1);
 
@@ -77,7 +76,6 @@ public class ArtifactoryDeploymentConfiguration extends AbstractArtifactoryConfi
             password = taskDefinition.getConfiguration().get("password");
             context.put(DEPLOYMENT_PREFIX + PASSWORD, password);
         }
-        context.put("serverConfigManager", serverConfigManager);
         context.put("selectedServerId", selectedServerId);
         context.put("selectedRepoKey", selectedRepoKey);
     }
@@ -85,7 +83,6 @@ public class ArtifactoryDeploymentConfiguration extends AbstractArtifactoryConfi
     @Override
     public void populateContextForView(@NotNull Map<String, Object> context, @NotNull TaskDefinition taskDefinition) {
         super.populateContextForView(context, taskDefinition);
-        context.put("serverConfigManager", serverConfigManager);
         contextPut(context, AbstractBuildContext.SERVER_ID_PARAM,
             taskDefinition.getConfiguration().get(AbstractBuildContext.SERVER_ID_PARAM));
         contextPutEmpty(context, USERNAME);

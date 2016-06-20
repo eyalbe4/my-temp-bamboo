@@ -5,8 +5,8 @@ import com.atlassian.bamboo.plugin.RemoteAgentSupported;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.admin.BintrayConfiguration;
-import org.jfrog.bamboo.admin.ServerConfig;
 import org.jfrog.bamboo.bintray.client.BintrayClient;
 import org.jfrog.bamboo.promotion.PromotionContext;
 import org.jfrog.bamboo.util.TaskUtils;
@@ -51,7 +51,8 @@ public class PushToBintrayAction extends ViewBuildResults {
         try {
             context.setBuildNumber(this.getBuildNumber());
             context.setBuildKey(this.getImmutableBuild().getName());
-            BintrayConfiguration bintrayConfig = TaskUtils.getBintrayConfig();
+            TaskUtils taskUtils = new TaskUtils();
+            BintrayConfiguration bintrayConfig = taskUtils.getBintrayConfig();
             bintrayClient = new BintrayClient(bintrayConfig);
             Map<String, String> buildTaskConfiguration = TaskUtils.findConfigurationForBuildTask(this);
             addDefaultValuesForInput(buildTaskConfiguration);
@@ -64,9 +65,10 @@ public class PushToBintrayAction extends ViewBuildResults {
 
     public String doPush() {
         String result;
-        ServerConfig serverConfig = TaskUtils.getArtifactoryServerConfig(getImmutablePlan());
+        TaskUtils taskUtils = new TaskUtils();
+        ArtifactoryServer artifactoryServer = taskUtils.getArtifactoryServerConfig(getImmutablePlan());
         try {
-            new Thread(new PushToBintrayRunnable(this, serverConfig, bintrayClient)).start();
+            new Thread(new PushToBintrayRunnable(this, artifactoryServer, bintrayClient)).start();
             pushing = false;
             result = SUCCESS;
         } catch (Exception e) {

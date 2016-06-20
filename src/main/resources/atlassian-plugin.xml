@@ -13,8 +13,8 @@
     <resource type="i18n" name="i18n" location="i18n"/>
 
     <!-- Admin Configurations -->
-    <component name="Artifactory Server Configuration Management Component" key="artifactoryServerConfigManager"
-               class="org.jfrog.bamboo.admin.ServerConfigManager"/>
+    <!--<component name="Artifactory Server Configuration Management Component" key="artifactoryServerConfigManager"-->
+               <!--class="org.jfrog.bamboo.admin.ServerConfigManager"/>-->
 
     <web-section key="jfrog" name="JFrog"
                  location="system.admin" weight="50">
@@ -129,18 +129,18 @@
 
     <!--Generic build deploy task-->
 
-    <taskType key="artifactoryGenericTask" name="Artifactory Generic Deploy"
-              class="org.jfrog.bamboo.task.ArtifactoryGenericDeployTask">
-        <description>Artifactory Generic Deploy Task</description>
-        <configuration class="org.jfrog.bamboo.configuration.ArtifactoryGenericBuildConfiguration"/>
-        <category name="deployment"/>
-        <executable key="generic"/>
-        <resource type="freemarker" name="edit"
-                  location="templates/plugins/generic/artifactoryGenericBuildActionEdit.ftl"/>
-        <resource type="freemarker" name="view"
-                  location="templates/plugins/generic/artifactoryGenericBuildActionView.ftl"/>
-        <resource type="download" name="icon" location="images/artifactory-icon-small.png"/>
-    </taskType>
+    <!--<taskType key="artifactoryGenericTask" name="Artifactory Generic Deploy"-->
+              <!--class="org.jfrog.bamboo.task.ArtifactoryGenericDeployTask">-->
+        <!--<description>Artifactory Generic Deploy Task</description>-->
+        <!--<configuration class="org.jfrog.bamboo.configuration.ArtifactoryGenericBuildConfiguration"/>-->
+        <!--<category name="deployment"/>-->
+        <!--<executable key="generic"/>-->
+        <!--<resource type="freemarker" name="edit"-->
+                  <!--location="templates/plugins/generic/artifactoryGenericBuildActionEdit.ftl"/>-->
+        <!--<resource type="freemarker" name="view"-->
+                  <!--location="templates/plugins/generic/artifactoryGenericBuildActionView.ftl"/>-->
+        <!--<resource type="download" name="icon" location="images/artifactory-icon-small.png"/>-->
+    <!--</taskType>-->
 
     <!--Generic build resolve task-->
     <taskType key="artifactoryGenericResolveTask" name="Artifactory Generic Resolve"
@@ -156,19 +156,19 @@
         <resource type="download" name="icon" location="images/artifactory-icon-small.png"/>
     </taskType>
 
-    <!--Gradle task-->
-    <taskType key="artifactoryGradleTask" name="Artifactory Gradle"
-    class="org.jfrog.bamboo.task.ArtifactoryGradleTask">
-        <description>Artifactory Gradle task</description>
-        <configuration class="org.jfrog.bamboo.configuration.ArtifactoryGradleConfiguration"/>
-        <category name="builder"/>
-        <capabilityDefaultsHelper class="org.jfrog.bamboo.capability.GradleCapabilityHelper"/>
-        <runtimeTaskDataProvider class="org.jfrog.bamboo.release.provider.TokenDataProvider"/>
-        <executable key="gradle" pathHelpKey="builder.gradle.pathHelp"/>
-        <resource type="freemarker" name="edit" location="/templates/plugins/task/artifactoryGradleBuilderEdit.ftl"/>
-        <resource type="freemarker" name="view" location="/templates/plugins/task/artifactoryGradleBuilderView.ftl"/>
-        <resource type="download" name="icon" location="images/artifactory-gradle-icon.png"/>
-    </taskType>
+    <!--&lt;!&ndash;Gradle task&ndash;&gt;-->
+    <!--<taskType key="artifactoryGradleTask" name="Artifactory Gradle"-->
+    <!--class="org.jfrog.bamboo.task.ArtifactoryGradleTask">-->
+        <!--<description>Artifactory Gradle task</description>-->
+        <!--<configuration class="org.jfrog.bamboo.configuration.ArtifactoryGradleConfiguration"/>-->
+        <!--<category name="builder"/>-->
+        <!--<capabilityDefaultsHelper class="org.jfrog.bamboo.capability.GradleCapabilityHelper"/>-->
+        <!--<runtimeTaskDataProvider class="org.jfrog.bamboo.release.provider.TokenDataProvider"/>-->
+        <!--<executable key="gradle" pathHelpKey="builder.gradle.pathHelp"/>-->
+        <!--<resource type="freemarker" name="edit" location="/templates/plugins/task/artifactoryGradleBuilderEdit.ftl"/>-->
+        <!--<resource type="freemarker" name="view" location="/templates/plugins/task/artifactoryGradleBuilderView.ftl"/>-->
+        <!--<resource type="download" name="icon" location="images/artifactory-gradle-icon.png"/>-->
+    <!--</taskType>-->
 
     <!-- Build process -->
 

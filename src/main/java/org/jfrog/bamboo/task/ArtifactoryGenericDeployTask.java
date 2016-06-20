@@ -17,8 +17,8 @@ import com.google.common.collect.Multimap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.jfrog.bamboo.admin.ServerConfig;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.configuration.BuildParamsOverrideManager;
 import org.jfrog.bamboo.context.GenericContext;
 import org.jfrog.bamboo.util.BambooBuildInfoLog;
@@ -31,6 +31,7 @@ import org.jfrog.build.client.DeployDetails;
 import org.jfrog.build.extractor.BuildInfoExtractorUtils;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
 import org.jfrog.build.extractor.clientConfiguration.util.PublishedItemsHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,6 +54,8 @@ public class ArtifactoryGenericDeployTask implements TaskType {
     private GenericBuildInfoHelper buildInfoHelper;
     private CustomVariableContext customVariableContext;
     private BuildParamsOverrideManager buildParamsOverrideManager;
+    @Autowired
+    private ArtifactoryAdminService artifactoryAdminService;
 
     public ArtifactoryGenericDeployTask(EnvironmentVariableAccessor environmentVariableAccessor) {
         this.environmentVariableAccessor = environmentVariableAccessor;
@@ -155,22 +158,21 @@ public class ArtifactoryGenericDeployTask implements TaskType {
     }
 
     private void deploy(Multimap<String, File> filesMap, GenericContext context, TaskContext taskContext) throws IOException, NoSuchAlgorithmException {
-        ServerConfigManager serverConfigManager = ServerConfigManager.getInstance();
-        ServerConfig serverConfig = serverConfigManager.getServerConfigById(context.getSelectedServerId());
-        if (serverConfig == null) {
+        ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(context.getSelectedServerId());
+        if (artifactoryServer == null) {
             throw new IllegalArgumentException("Could not find Artifactpry server. Please check the Artifactory server in the task configuration.");
         }
-        String username = buildInfoHelper.overrideParam(serverConfigManager.substituteVariables(context.getUsername()),
+        String username = buildInfoHelper.overrideParam(artifactoryAdminService.substituteVariables(context.getUsername()),
                 BuildParamsOverrideManager.OVERRIDE_ARTIFACTORY_DEPLOYER_USERNAME);
         if (StringUtils.isBlank(username)) {
-            username = serverConfigManager.substituteVariables(serverConfig.getUsername());
+            username = artifactoryAdminService.substituteVariables(artifactoryServer.getUsername());
         }
-        String password = buildInfoHelper.overrideParam(serverConfigManager.substituteVariables(context.getPassword()),
+        String password = buildInfoHelper.overrideParam(artifactoryAdminService.substituteVariables(context.getPassword()),
                 BuildParamsOverrideManager.OVERRIDE_ARTIFACTORY_DEPLOYER_PASSWORD);
         if (StringUtils.isBlank(password)) {
-            password = serverConfigManager.substituteVariables(serverConfig.getPassword());
+            password = artifactoryAdminService.substituteVariables(artifactoryServer.getPassword());
         }
-        String serverUrl = serverConfigManager.substituteVariables(serverConfig.getUrl());
+        String serverUrl = artifactoryAdminService.substituteVariables(artifactoryServer.getServerUrl());
         ArtifactoryBuildInfoClient client =
                 new ArtifactoryBuildInfoClient(serverUrl, username, password, new BambooBuildInfoLog(log));
         try {

@@ -6,8 +6,8 @@ import com.atlassian.bamboo.v2.build.agent.capability.CapabilityDefaultsHelper;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jfrog.bamboo.admin.ServerConfig;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.context.IvyBuildContext;
 
@@ -23,8 +23,8 @@ public class ArtifactoryIvyConfiguration extends AbstractArtifactoryConfiguratio
     protected static final String DEFAULT_TEST_REPORTS_XML = "**/test-reports/*.xml";
     private static final Set<String> FIELDS_TO_COPY = IvyBuildContext.getFieldsToCopy();
 
-    public ArtifactoryIvyConfiguration(ServerConfigManager serverConfigManager) {
-        super(IvyBuildContext.PREFIX, CapabilityDefaultsHelper.CAPABILITY_BUILDER_PREFIX + ".ivy", serverConfigManager);
+    public ArtifactoryIvyConfiguration(ArtifactoryAdminService artifactoryAdminService) {
+        super(IvyBuildContext.PREFIX, CapabilityDefaultsHelper.CAPABILITY_BUILDER_PREFIX + ".ivy", artifactoryAdminService);
     }
 
     @Override
@@ -52,7 +52,6 @@ public class ArtifactoryIvyConfiguration extends AbstractArtifactoryConfiguratio
         context.put("baseUrl", administrationConfiguration.getBaseUrl());
         context.put("build", context.get("plan"));
         context.put("dummyList", Lists.newArrayList());
-        context.put("serverConfigManager", serverConfigManager);
         context.put("selectedServerId", -1);
         context.put("selectedRepoKey", "");
     }
@@ -67,7 +66,6 @@ public class ArtifactoryIvyConfiguration extends AbstractArtifactoryConfiguratio
                 IvyBuildContext.NO_PUBLISHING_REPO_KEY_CONFIGURED;
         context.put("selectedRepoKey", selectedPublishingRepoKey);
         context.put("selectedServerId", context.get(IvyBuildContext.PREFIX + IvyBuildContext.SERVER_ID_PARAM));
-        context.put("serverConfigManager", serverConfigManager);
         String envVarsExcludePatterns = (String) context.get(AbstractBuildContext.ENV_VARS_EXCLUDE_PATTERNS);
         if (envVarsExcludePatterns == null) {
             context.put(AbstractBuildContext.ENV_VARS_EXCLUDE_PATTERNS, "*password*,*secret*");
@@ -78,12 +76,11 @@ public class ArtifactoryIvyConfiguration extends AbstractArtifactoryConfiguratio
     public void populateContextForView(@NotNull Map<String, Object> context, @NotNull TaskDefinition taskDefinition) {
         super.populateContextForView(context, taskDefinition);
         taskConfiguratorHelper.populateContextWithConfiguration(context, taskDefinition, FIELDS_TO_COPY);
-        context.put("serverConfigManager", serverConfigManager);
         IvyBuildContext buildContext = IvyBuildContext.createIvyContextFromMap(context);
-        long serverId = buildContext.getArtifactoryServerId();
+        int serverId = buildContext.getArtifactoryServerId();
         context.put("selectedServerId", serverId);
-        ServerConfig serverConfig = serverConfigManager.getServerConfigById(serverId);
-        context.put("selectedServerUrl", serverConfig.getUrl());
+        ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(serverId);
+        context.put("selectedServerUrl", artifactoryServer.getServerUrl());
         context.put("isUseM2CompatiblePatterns", buildContext.isMaven2Compatible());
         context.put("isRunLicenseChecks", buildContext.isRunLicenseChecks());
         context.put("isPublishArtifacts", buildContext.isPublishArtifacts());

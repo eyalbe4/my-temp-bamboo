@@ -3,7 +3,7 @@ package org.jfrog.bamboo.bintray;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jfrog.bamboo.admin.ServerConfig;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.bintray.client.BintrayClient;
 import org.jfrog.bamboo.util.ActionLog;
 import org.jfrog.bamboo.util.BambooBuildInfoLog;
@@ -27,20 +27,21 @@ public class PushToBintrayRunnable implements Runnable {
     private Logger log = Logger.getLogger(PushToBintrayRunnable.class);
 
     private BintrayClient bintrayClient;
-    private ServerConfig serverConfig;
+    private ArtifactoryServer artifactoryServer;
     private PushToBintrayAction action;
     private ActionLog bintrayLog;
     private String buildName;
     private String buildNumber;
 
 
-    public PushToBintrayRunnable(PushToBintrayAction pushToBintrayAction, ServerConfig serverConfig, BintrayClient bintrayClient) {
+    public PushToBintrayRunnable(PushToBintrayAction pushToBintrayAction, ArtifactoryServer artifactoryServer,
+                                 BintrayClient bintrayClient) {
         this.action = pushToBintrayAction;
-        this.serverConfig = serverConfig;
+        this.artifactoryServer = artifactoryServer;
         this.bintrayClient = bintrayClient;
-//        this.bintrayLog = PushToBintrayAction.context.getActionLog();
-//        this.buildName = PushToBintrayAction.context.getBuildKey();
-//        this.buildNumber = Integer.toString(PushToBintrayAction.context.getBuildNumber());
+        this.bintrayLog = PushToBintrayAction.context.getActionLog();
+        this.buildName = PushToBintrayAction.context.getBuildKey();
+        this.buildNumber = Integer.toString(PushToBintrayAction.context.getBuildNumber());
     }
 
     /**
@@ -52,12 +53,12 @@ public class PushToBintrayRunnable implements Runnable {
         ArtifactoryBuildInfoClient artifactoryClient = null;
         try {
             bintrayLog.logMessage("Starting Push to Bintray action.");
-//            PushToBintrayAction.context.getLock().lock();
-//            PushToBintrayAction.context.setDone(false);
+            PushToBintrayAction.context.getLock().lock();
+            PushToBintrayAction.context.setDone(false);
             artifactoryClient = getArtifactoryBuildInfoClient();
             if (!isValidArtifactoryVersion(artifactoryClient)) {
                 bintrayLog.logError("Push to Bintray supported from Artifactory version " + MINIMAL_SUPPORTED_VERSION);
-//                PushToBintrayAction.context.setDone(true);
+                PushToBintrayAction.context.setDone(true);
                 return;
             }
             performPushToBintray(artifactoryClient);
@@ -71,8 +72,8 @@ public class PushToBintrayRunnable implements Runnable {
             if (artifactoryClient != null) {
                 artifactoryClient.shutdown();
             }
-//            PushToBintrayAction.context.setDone(true);
-//            PushToBintrayAction.context.getLock().unlock();
+            PushToBintrayAction.context.setDone(true);
+            PushToBintrayAction.context.getLock().unlock();
         }
     }
 
@@ -131,11 +132,11 @@ public class PushToBintrayRunnable implements Runnable {
     // version, subject etc. So we must read it from the bintray-info.json file frmo Artifactory.
     private void prepareMavenCentralSync() {
         // fetch the location of the file from Artifactory
-        Map<String, Object> response = bintrayClient.getBintrayJsonFileLocation(serverConfig, buildName, buildNumber);
+        Map<String, Object> response = bintrayClient.getBintrayJsonFileLocation(artifactoryServer, buildName, buildNumber);
         // parse Artifactory response and get the download URI
         String fileUrl = MavenSyncHelper.getBintrayDescriptorFileUrl(response);
         // download the file to memory
-        Map<String, Object> bintrayJsonMap = bintrayClient.downloadBintrayInfoDescriptor(serverConfig, fileUrl);
+        Map<String, Object> bintrayJsonMap = bintrayClient.downloadBintrayInfoDescriptor(artifactoryServer, fileUrl);
         // populate the properties we now have to the action context - subject, repo name, package name and version.
         MavenSyncHelper.updateBintrayActionContext(action, bintrayJsonMap);
     }
@@ -152,9 +153,9 @@ public class PushToBintrayRunnable implements Runnable {
     }
 
     private ArtifactoryBuildInfoClient getArtifactoryBuildInfoClient() {
-        String username = serverConfig.getUsername();
-        String password = serverConfig.getPassword();
-        String artifactoryUrl = serverConfig.getUrl();
+        String username = artifactoryServer.getUsername();
+        String password = artifactoryServer.getPassword();
+        String artifactoryUrl = artifactoryServer.getServerUrl();
         return new ArtifactoryBuildInfoClient(artifactoryUrl, username, password, new BambooBuildInfoLog(log));
     }
 

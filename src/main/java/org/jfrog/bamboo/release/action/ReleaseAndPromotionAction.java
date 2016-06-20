@@ -28,8 +28,8 @@ import com.opensymphony.xwork.ActionContext;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jfrog.bamboo.admin.ServerConfig;
-import org.jfrog.bamboo.admin.ServerConfigManager;
+import org.jfrog.bamboo.admin.ArtifactoryAdminService;
+import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.context.Maven3BuildContext;
 import org.jfrog.bamboo.promotion.PromotionContext;
@@ -71,7 +71,8 @@ public class ReleaseAndPromotionAction extends ViewBuildResults {
                     ReleaseProvider.CFG_VERSION_PER_MODULE, "Version per module",
                     ReleaseProvider.CFG_USE_EXISTING_VERSION, "Use existing module versions");
     public static PromotionContext promotionContext = new PromotionContext();
-    ServerConfigManager serverConfigManager = (ServerConfigManager) ContainerManager.getComponent(ConstantValues.PLUGIN_CONFIG_MANAGER_KEY);
+//    ServerConfigManager serverConfigManager = (ServerConfigManager) ContainerManager.getComponent(ConstantValues.PLUGIN_CONFIG_MANAGER_KEY);
+    ArtifactoryAdminService artifactoryAdminService;
     private String promotionMode = PROMOTION_NORMAL_MODE;
     private boolean promoting = true;
     private String promotionRepo = "";
@@ -394,9 +395,7 @@ public class ReleaseAndPromotionAction extends ViewBuildResults {
         if (StringUtils.isBlank(serverId)) {
             return Lists.newArrayList();
         }
-        ServerConfigManager component = (ServerConfigManager) ContainerManager.getComponent(
-                ConstantValues.PLUGIN_CONFIG_MANAGER_KEY);
-        return component.getDeployableRepos(Long.parseLong(serverId));
+        return artifactoryAdminService.getDeployableRepos(Integer.parseInt(serverId));
     }
 
     public String getReleasePublishingRepo() {
@@ -556,8 +555,6 @@ public class ReleaseAndPromotionAction extends ViewBuildResults {
             log.error("You are not permitted to execute build promotion.");
             return ERROR;
         }
-        ServerConfigManager component = (ServerConfigManager) ContainerManager.getComponent(
-                ConstantValues.PLUGIN_CONFIG_MANAGER_KEY);
         TaskDefinition definition = TaskUtils.getMavenOrGradleTaskDefinition(getMutablePlan());
         if (definition == null) {
             return ERROR;
@@ -567,8 +564,8 @@ public class ReleaseAndPromotionAction extends ViewBuildResults {
             log.error("No selected Artifactory server Id");
             return ERROR;
         }
-        ServerConfig serverConfig = component.getServerConfigById(Long.parseLong(serverId));
-        if (serverConfig == null) {
+        ArtifactoryServer artifactoryServer = artifactoryAdminService.getArtifactoryServer(Integer.parseInt(serverId));
+        if (artifactoryServer == null) {
             log.error("Error while retrieving target repository list: Could not find Artifactory server " +
                     "configuration by the ID " + serverId);
             return ERROR;
@@ -576,7 +573,8 @@ public class ReleaseAndPromotionAction extends ViewBuildResults {
 
         Map<String, String> taskConfiguration = definition.getConfiguration();
         AbstractBuildContext context = AbstractBuildContext.createContextFromMap(taskConfiguration);
-        ArtifactoryBuildInfoClient client = TaskUtils.createClient(serverConfigManager, serverConfig, context, log);
+        TaskUtils taskUtils = new TaskUtils();
+        ArtifactoryBuildInfoClient client = taskUtils.createClient(artifactoryServer, context, log);
         ResultsSummary summary = getResultsSummary();
         TriggerReason reason = summary.getTriggerReason();
         String username = "";
@@ -608,7 +606,8 @@ public class ReleaseAndPromotionAction extends ViewBuildResults {
         Map<String, String> promotionModes = Maps.newHashMap();
         promotionModes.put(PROMOTION_NORMAL_MODE, "Normal");
         TaskDefinition definition = TaskUtils.getMavenOrGradleTaskDefinition(getMutablePlan());
-        if (MavenSyncUtils.isPushToNexusEnabled(serverConfigManager, definition, getSelectedServerId(definition))) {
+        MavenSyncUtils mavenSyncUtils = new MavenSyncUtils();
+        if (mavenSyncUtils.isPushToNexusEnabled(definition, getSelectedServerId(definition))) {
             promotionModes.put(PROMOTION_PUSH_TO_NEXUS_MODE, "Promote to Bintray and Central");
         }
         return promotionModes;
@@ -628,9 +627,7 @@ public class ReleaseAndPromotionAction extends ViewBuildResults {
             log.warn("No Artifactory server Id found");
             return Lists.newArrayList();
         }
-        ServerConfigManager component = (ServerConfigManager) ContainerManager.getComponent(
-                ConstantValues.PLUGIN_CONFIG_MANAGER_KEY);
-        return component.getDeployableRepos(Long.parseLong(selectedServerId));
+        return artifactoryAdminService.getDeployableRepos(Integer.parseInt(selectedServerId));
     }
 
     public String getSelectedServerId(TaskDefinition definition) {
