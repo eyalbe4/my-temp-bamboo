@@ -18,7 +18,6 @@ import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.bamboo.v2.build.trigger.ManualBuildTriggerReason;
 import com.atlassian.bamboo.v2.build.trigger.TriggerReason;
 import com.atlassian.bamboo.variable.VariableDefinitionManager;
-import com.atlassian.spring.container.ContainerManager;
 import com.atlassian.user.User;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;

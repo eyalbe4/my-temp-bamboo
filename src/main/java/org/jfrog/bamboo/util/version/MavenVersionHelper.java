@@ -1,6 +1,5 @@
 package org.jfrog.bamboo.util.version;
 
-import com.atlassian.bamboo.fileserver.SystemDirectory;
 import com.atlassian.bamboo.plan.Plan;
 import com.atlassian.bamboo.repository.RepositoryException;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;

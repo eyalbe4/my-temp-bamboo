@@ -1,7 +1,6 @@
 package org.jfrog.bamboo.configuration;
 
 import com.atlassian.bamboo.collections.ActionParametersMap;
-import com.atlassian.bamboo.task.TaskConfiguratorHelper;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;

@@ -20,7 +20,6 @@ import com.atlassian.bamboo.ww2.BambooActionSupport;
 import com.atlassian.bamboo.ww2.aware.permissions.GlobalAdminSecurityAware;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 import org.jfrog.bamboo.util.BambooBuildInfoLog;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
 import org.jfrog.build.util.VersionException;

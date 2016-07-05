@@ -16,7 +16,6 @@
 
 package org.jfrog.bamboo.admin;
 
-import com.atlassian.spring.container.ContainerManager;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -24,7 +23,6 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.jfrog.bamboo.util.ConstantValues;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

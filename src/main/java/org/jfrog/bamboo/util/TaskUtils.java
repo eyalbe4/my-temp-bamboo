@@ -2,12 +2,9 @@ package org.jfrog.bamboo.util;
 
 import com.atlassian.bamboo.build.ViewBuildResults;
 import com.atlassian.bamboo.plan.cache.ImmutablePlan;
-import com.atlassian.bamboo.security.EncryptionException;
 import com.atlassian.bamboo.security.EncryptionService;
-import com.atlassian.bamboo.spring.ComponentAccessor;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.task.runtime.RuntimeTaskDefinition;
-import com.atlassian.spring.container.ContainerManager;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;

@@ -1,7 +1,6 @@
 package org.jfrog.bamboo.release.action;
 
 import com.atlassian.bamboo.task.TaskDefinition;
-import com.atlassian.spring.container.ContainerManager;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
@@ -9,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.jfrog.bamboo.admin.ArtifactoryAdminService;
 import org.jfrog.bamboo.admin.ArtifactoryServer;
 import org.jfrog.bamboo.context.AbstractBuildContext;
-import org.jfrog.bamboo.util.ConstantValues;
 import org.jfrog.bamboo.util.TaskUtils;
 import org.jfrog.build.extractor.clientConfiguration.client.ArtifactoryBuildInfoClient;
 import org.springframework.beans.factory.annotation.Autowired;

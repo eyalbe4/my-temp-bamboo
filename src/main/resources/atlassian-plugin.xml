@@ -125,6 +125,19 @@
     <resource type="download" name="bintray.png" location="images/bintray.png"/>
 
     <!-- T a s k s -->
+    <!--Generic build resolve task-->
+    <taskType key="artifactoryGenericResolveTask" name="Artifactory Generic Resolve"
+              class="org.jfrog.bamboo.task.ArtifactoryGenericResolveTask">
+        <description>Artifactory Generic Deploy Task</description>
+        <category name="resolve"/>
+        <executable key="generic"/>
+        <configuration class="org.jfrog.bamboo.configuration.ArtifactoryGenericResolveConfiguration"/>
+        <resource type="freemarker" name="edit"
+                  location="templates/plugins/generic/artifactoryGenericResolveActionEdit.ftl"/>
+        <resource type="freemarker" name="view"
+                  location="templates/plugins/generic/artifactoryGenericResolveActionView.ftl"/>
+        <resource type="download" name="icon" location="images/artifactory-icon-small.png"/>
+    </taskType>
 
 
     <!--Generic build deploy task-->
@@ -142,19 +155,6 @@
         <!--<resource type="download" name="icon" location="images/artifactory-icon-small.png"/>-->
     <!--</taskType>-->
 
-    <!--Generic build resolve task-->
-    <taskType key="artifactoryGenericResolveTask" name="Artifactory Generic Resolve"
-              class="org.jfrog.bamboo.task.ArtifactoryGenericResolveTask">
-        <description>Artifactory Generic Deploy Task</description>
-        <category name="resolve"/>
-        <executable key="generic"/>
-        <configuration class="org.jfrog.bamboo.configuration.ArtifactoryGenericResolveConfiguration"/>
-        <resource type="freemarker" name="edit"
-                  location="templates/plugins/generic/artifactoryGenericResolveActionEdit.ftl"/>
-        <resource type="freemarker" name="view"
-                  location="templates/plugins/generic/artifactoryGenericResolveActionView.ftl"/>
-        <resource type="download" name="icon" location="images/artifactory-icon-small.png"/>
-    </taskType>
 
     <!--&lt;!&ndash;Gradle task&ndash;&gt;-->
     <!--<taskType key="artifactoryGradleTask" name="Artifactory Gradle"-->
@@ -173,18 +173,18 @@
     <!-- Build process -->
 
     <!-- Deploy process -->
-    <taskType key="artifactoryDeploymentTask" name="Artifactory Deployment"
-              class="org.jfrog.bamboo.deployment.ArtifactoryDeploymentTask">
-        <description>Artifactory Deployment Task</description>
-        <configuration class="org.jfrog.bamboo.deployment.ArtifactoryDeploymentConfiguration"/>
-        <category name="deployment"/>
-        <executable key="deployment"/>
-        <resource type="freemarker" name="edit"
-                  location="/templates/plugins/deployment/artifactoryDeploymentActionEdit.ftl"/>
-        <resource type="freemarker" name="view"
-                  location="/templates/plugins/deployment/artifactoryDeploymentActionView.ftl"/>
-        <resource type="download" name="icon" location="images/artifactory-icon-small.png"/>
-    </taskType>
+    <!--<taskType key="artifactoryDeploymentTask" name="Artifactory Deployment"-->
+              <!--class="org.jfrog.bamboo.deployment.ArtifactoryDeploymentTask">-->
+        <!--<description>Artifactory Deployment Task</description>-->
+        <!--<configuration class="org.jfrog.bamboo.deployment.ArtifactoryDeploymentConfiguration"/>-->
+        <!--<category name="deployment"/>-->
+        <!--<executable key="deployment"/>-->
+        <!--<resource type="freemarker" name="edit"-->
+                  <!--location="/templates/plugins/deployment/artifactoryDeploymentActionEdit.ftl"/>-->
+        <!--<resource type="freemarker" name="view"-->
+                  <!--location="/templates/plugins/deployment/artifactoryDeploymentActionView.ftl"/>-->
+        <!--<resource type="download" name="icon" location="images/artifactory-icon-small.png"/>-->
+    <!--</taskType>-->
 
 
 
@@ -209,9 +209,9 @@
     <!--</web-item>-->
 
     <!--release management and promote-->
-    <web-resource key="releaseCSS" name="releaseCSS">
-        <resource type="download" name="release.css" location="release.css"/>
-    </web-resource>
+    <!--<web-resource key="releaseCSS" name="releaseCSS">-->
+        <!--<resource type="download" name="release.css" location="release.css"/>-->
+    <!--</web-resource>-->
 
     <!--<web-item key="brmpTab:${buildKey}-${buildNumber}" name="Artifactory Pro Release Staging"-->
     <!--section="results.subMenu/results" weight="130">-->
@@ -323,17 +323,17 @@
     <!--<description>Post build processor for Artifactory Release.</description>-->
     <!--</buildProcessor>-->
 
-    <buildProcessor key="artifactoryBuildInfoCopier" name="Artifactory Build Info Copier"
-                    class="org.jfrog.bamboo.processor.BuildInfoCopier">
-        <skipIfFailed>true</skipIfFailed>
-        <description>Post build processor to copy build info to artifact storage.</description>
-    </buildProcessor>
+    <!--<buildProcessor key="artifactoryBuildInfoCopier" name="Artifactory Build Info Copier"-->
+                    <!--class="org.jfrog.bamboo.processor.BuildInfoCopier">-->
+        <!--<skipIfFailed>true</skipIfFailed>-->
+        <!--<description>Post build processor to copy build info to artifact storage.</description>-->
+    <!--</buildProcessor>-->
 
-    <buildProcessor key="artifactoryGradlePropertiesCopier" name="Artifactory Gradle Properties Info Copier"
-                    class="org.jfrog.bamboo.processor.GradlePropertiesCopier">
-        <skipIfFailed>true</skipIfFailed>
-        <description>Post build processor to copy gradle properties to artifact storage.</description>
-    </buildProcessor>
+    <!--<buildProcessor key="artifactoryGradlePropertiesCopier" name="Artifactory Gradle Properties Info Copier"-->
+                    <!--class="org.jfrog.bamboo.processor.GradlePropertiesCopier">-->
+        <!--<skipIfFailed>true</skipIfFailed>-->
+        <!--<description>Post build processor to copy gradle properties to artifact storage.</description>-->
+    <!--</buildProcessor>-->
 
     <!--<additionalBuildConfigurationPlugin key="releasePlanConfiguration" name="Release Management Configuration"-->
     <!--class="org.jfrog.bamboo.release.configuration.ReleaseManagementConfigurator">-->
