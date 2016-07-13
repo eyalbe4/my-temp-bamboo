@@ -31,7 +31,7 @@
     </scm>
 
     <properties>
-        <bamboo.version>5.11.1.1</bamboo.version>
+        <bamboo.version>5.12.2</bamboo.version>
         <bamboo.data.version>5.10.0</bamboo.data.version>
         <amps.version>6.2.1</amps.version>
         <plugin.testrunner.version>1.2.3</plugin.testrunner.version>
@@ -88,7 +88,7 @@
             <groupId>org.jfrog.buildinfo</groupId>
             <artifactId>build-info-extractor-gradle</artifactId>
             <version>${buildinfo.gradle.version}</version>
-            <classifier>    uber</classifier>
+            <classifier>uber</classifier>
         </dependency>
         <dependency>
             <groupId>org.jfrog.buildinfo</groupId>

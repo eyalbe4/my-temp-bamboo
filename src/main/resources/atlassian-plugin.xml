@@ -16,7 +16,12 @@
     <component name="Artifactory Server Configuration Management Component" key="artifactoryServerConfigManager"
                class="org.jfrog.bamboo.admin.ServerConfigManager"/>
 
-    <web-item key="configureArtifactoryPlugin" name="Artifactory Plugin" section="system.admin/plugins" weight="9">
+    <web-section key="jfrog" name="JFrog"
+                 location="system.admin" weight="50">
+        <label key="project.organization.name" />
+    </web-section>
+
+    <web-item key="configureArtifactoryPlugin" name="Artifactory Plugin" section="system.admin/jfrog" weight="50">
         <label key="JFrog Artifactory Plugin"/>
         <link linkId="configureArtifactoryPlugin">/admin/manageArtifactoryServers.action</link>
     </web-item>
