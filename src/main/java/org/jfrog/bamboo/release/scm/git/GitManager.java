@@ -11,6 +11,7 @@ import com.atlassian.bamboo.security.EncryptionService;
 import com.atlassian.bamboo.spring.ComponentAccessor;
 import com.atlassian.bamboo.v2.build.BuildContext;
 import com.atlassian.bamboo.variable.CustomVariableContext;
+import com.atlassian.spring.container.ContainerManager;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -46,8 +47,7 @@ public class GitManager extends AbstractScmManager<AbstractRepository> {
     private static final Logger log = Logger.getLogger(GitManager.class);
     private static final String REF_PREFIX = "refs/heads/";
     private static final String REFS_TAGS = "refs/tags/";
-
-    private EncryptionService encryptionService = ComponentAccessor.ENCRYPTION_SERVICE.get();
+    private EncryptionService encryptionService = (EncryptionService) ContainerManager.getComponent("encryptionService");
     private BuildLogger buildLogger;
     private TextProvider textProvider;
     private CustomVariableContext customVariableContext;

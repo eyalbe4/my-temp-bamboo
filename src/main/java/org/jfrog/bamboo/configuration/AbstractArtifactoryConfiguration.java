@@ -41,7 +41,7 @@ import java.util.Set;
 public abstract class AbstractArtifactoryConfiguration extends AbstractTaskConfigurator implements
         TaskTestResultsSupport, BuildTaskRequirementSupport {
 
-    protected EncryptionService encryptionService = ComponentAccessor.ENCRYPTION_SERVICE.get();
+    protected EncryptionService encryptionService = (EncryptionService) ContainerManager.getComponent("encryptionService");
 
     public static final String CFG_TEST_RESULTS_FILE_PATTERN_OPTION_CUSTOM = "customTestDirectory";
     public static final String CFG_TEST_RESULTS_FILE_PATTERN_OPTION_STANDARD = "standardTestDirectory";

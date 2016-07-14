@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jfrog.bamboo.admin.ServerConfigManager;
 import org.jfrog.bamboo.context.GenericContext;
 import org.jfrog.bamboo.context.IvyBuildContext;
+import javax.net.ssl.SSLSocket;
 
 import java.util.Map;
 import java.util.Set;
