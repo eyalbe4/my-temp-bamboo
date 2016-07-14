@@ -26,7 +26,7 @@ public class TokenDataProvider implements RuntimeTaskDataProvider {
     private SecureTokenService secureTokenService;
 
     @NotNull
-//    @Override
+    @Override
     public Map<String, String> populateRuntimeTaskData(@NotNull TaskDefinition taskDefinition, @NotNull CommonContext commonContext) {
         final Map<String, String> result = Maps.newHashMap();
         result.put(SECURITY_TOKEN, secureTokenService.generate(AuthenticableMessage.Identification.forResultKey(commonContext.getResultKey())).getToken());
@@ -43,18 +43,18 @@ public class TokenDataProvider implements RuntimeTaskDataProvider {
     }
 
     @NotNull
-//    @Override
+    @Override
     public Map<String, WhitelistedSerializable> createRuntimeTaskData(@NotNull RuntimeTaskDefinition runtimeTaskDefinition, @NotNull CommonContext commonContext) {
         return new HashMap<String, WhitelistedSerializable>();
     }
 
-//    @Override
+    @Override
     @Deprecated
     public void processRuntimeTaskData(@NotNull TaskDefinition taskDefinition, @NotNull CommonContext commonContext) {
         secureTokenService.invalidate(commonContext.getResultKey());
     }
 
-//    @Override
+    @Override
     public void processRuntimeTaskData(@NotNull RuntimeTaskDefinition runtimeTaskDefinition, @NotNull CommonContext commonContext) {
         secureTokenService.invalidate(commonContext.getResultKey());
     }

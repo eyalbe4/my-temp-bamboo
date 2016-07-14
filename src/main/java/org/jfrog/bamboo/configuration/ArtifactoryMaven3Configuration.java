@@ -129,7 +129,7 @@ public class ArtifactoryMaven3Configuration extends AbstractArtifactoryConfigura
         return DEFAULT_TEST_RESULTS_FILE_PATTERN;
     }
 
-//    @Override
+    @Override
     public boolean taskProducesTestResults(@NotNull TaskDefinition definition) {
         return new Maven3BuildContext(definition.getConfiguration()).isTestChecked();
     }
