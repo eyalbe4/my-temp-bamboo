@@ -121,18 +121,18 @@
 
     <!--Generic build deploy task-->
 
-    <!--<taskType key="artifactoryGenericTask" name="Artifactory Generic Deploy"-->
-              <!--class="org.jfrog.bamboo.task.ArtifactoryGenericDeployTask">-->
-        <!--<description>Artifactory Generic Deploy Task</description>-->
-        <!--<configuration class="org.jfrog.bamboo.configuration.ArtifactoryGenericBuildConfiguration"/>-->
-        <!--<category name="deployment"/>-->
-        <!--<executable key="generic"/>-->
-        <!--<resource type="freemarker" name="edit"-->
-                  <!--location="templates/plugins/generic/artifactoryGenericBuildActionEdit.ftl"/>-->
-        <!--<resource type="freemarker" name="view"-->
-                  <!--location="templates/plugins/generic/artifactoryGenericBuildActionView.ftl"/>-->
-        <!--<resource type="download" name="icon" location="images/artifactory-icon-small.png"/>-->
-    <!--</taskType>-->
+    <taskType key="artifactoryGenericTask" name="Artifactory Generic Deploy"
+              class="org.jfrog.bamboo.task.ArtifactoryGenericDeployTask">
+        <description>Artifactory Generic Deploy Task</description>
+        <configuration class="org.jfrog.bamboo.configuration.ArtifactoryGenericBuildConfiguration"/>
+        <category name="deployment"/>
+        <executable key="generic"/>
+        <resource type="freemarker" name="edit"
+                  location="templates/plugins/generic/artifactoryGenericBuildActionEdit.ftl"/>
+        <resource type="freemarker" name="view"
+                  location="templates/plugins/generic/artifactoryGenericBuildActionView.ftl"/>
+        <resource type="download" name="icon" location="images/artifactory-icon-small.png"/>
+    </taskType>
 
     <!--Generic build resolve task-->
     <taskType key="artifactoryGenericResolveTask" name="Artifactory Generic Resolve"
@@ -165,18 +165,18 @@
     <!-- Build process -->
 
     <!-- Deploy process -->
-    <!--<taskType key="artifactoryDeploymentTask" name="Artifactory Deployment"-->
-              <!--class="org.jfrog.bamboo.deployment.ArtifactoryDeploymentTask">-->
-        <!--<description>Artifactory Deployment Task</description>-->
-        <!--<configuration class="org.jfrog.bamboo.deployment.ArtifactoryDeploymentConfiguration"/>-->
-        <!--<category name="deployment"/>-->
-        <!--<executable key="deployment"/>-->
-        <!--<resource type="freemarker" name="edit"-->
-                  <!--location="/templates/plugins/deployment/artifactoryDeploymentActionEdit.ftl"/>-->
-        <!--<resource type="freemarker" name="view"-->
-                  <!--location="/templates/plugins/deployment/artifactoryDeploymentActionView.ftl"/>-->
-        <!--<resource type="download" name="icon" location="images/artifactory-icon-small.png"/>-->
-    <!--</taskType>-->
+    <taskType key="artifactoryDeploymentTask" name="Artifactory Deployment"
+              class="org.jfrog.bamboo.deployment.ArtifactoryDeploymentTask">
+        <description>Artifactory Deployment Task</description>
+        <configuration class="org.jfrog.bamboo.deployment.ArtifactoryDeploymentConfiguration"/>
+        <category name="deployment"/>
+        <executable key="deployment"/>
+        <resource type="freemarker" name="edit"
+                  location="/templates/plugins/deployment/artifactoryDeploymentActionEdit.ftl"/>
+        <resource type="freemarker" name="view"
+                  location="/templates/plugins/deployment/artifactoryDeploymentActionView.ftl"/>
+        <resource type="download" name="icon" location="images/artifactory-icon-small.png"/>
+    </taskType>
 
 
 

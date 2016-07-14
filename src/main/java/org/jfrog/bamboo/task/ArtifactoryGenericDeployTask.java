@@ -69,7 +69,7 @@ public class ArtifactoryGenericDeployTask implements TaskType {
         this.customVariableContext = customVariableContext;
     }
 
-//    @Override
+    @Override
     @NotNull
     public TaskResult execute(@NotNull TaskContext taskContext) throws TaskException {
         logger = taskContext.getBuildLogger();
