@@ -55,12 +55,13 @@ public class ServerConfigManager implements Serializable {
     private AtomicLong nextAvailableId = new AtomicLong(0);
     private CustomVariableContext customVariableContext;
 
-    public ServerConfigManager(BandanaManager bandanaManager) {
-        setBandanaManager( bandanaManager );
-    }
+//    public ServerConfigManager(BandanaManager bandanaManager) {
+//        setBandanaManager( bandanaManager );
+//    }
+//
+//    public ServerConfigManager() {
+//    }
 
-    public ServerConfigManager() {
-    }
 
     public List<ServerConfig> getAllServerConfigs() {
         return Lists.newArrayList(configuredServers);
@@ -302,9 +303,5 @@ public class ServerConfigManager implements Serializable {
 
     public void setCustomVariableContext(CustomVariableContext customVariableContext) {
         this.customVariableContext = customVariableContext;
-    }
-
-    public CustomVariableContext setCustomVariableContext() {
-        return null;
     }
 }

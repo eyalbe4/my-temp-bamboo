@@ -21,9 +21,9 @@ import java.util.Set;
 public class ArtifactoryGenericResolveConfiguration extends AbstractArtifactoryConfiguration {
     private static final Set<String> FIELDS_TO_COPY = GenericContext.getFieldsToCopy();
 
-    public ArtifactoryGenericResolveConfiguration(ServerConfigManager serverConfigManager) {
-        super(serverConfigManager);
-    }
+//    public ArtifactoryGenericResolveConfiguration(ServerConfigManager serverConfigManager) {
+//        super(serverConfigManager);
+//    }
 
     @Override
     public void populateContextForCreate(@NotNull Map<String, Object> context) {

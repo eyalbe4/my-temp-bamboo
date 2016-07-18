@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jfrog.bamboo.admin.ServerConfig;
-import org.jfrog.bamboo.admin.ServerConfigManager;
 import org.jfrog.bamboo.context.AbstractBuildContext;
 import org.jfrog.bamboo.context.GradleBuildContext;
 
@@ -26,8 +25,8 @@ public class ArtifactoryGradleConfiguration extends AbstractArtifactoryConfigura
 
     private static final Set<String> FIELDS_TO_COPY = GradleBuildContext.getFieldsToCopy();
 
-    public ArtifactoryGradleConfiguration(ServerConfigManager serverConfigManager) {
-        super(GradleBuildContext.PREFIX, serverConfigManager);
+    public ArtifactoryGradleConfiguration() {
+        super(GradleBuildContext.PREFIX);
     }
 
     @Override
@@ -126,7 +125,7 @@ public class ArtifactoryGradleConfiguration extends AbstractArtifactoryConfigura
         return DEFAULT_TEST_REPORTS_XML;
     }
 
-//    @Override
+    @Override
     public boolean taskProducesTestResults(@NotNull TaskDefinition definition) {
         return new GradleBuildContext(definition.getConfiguration()).isTestChecked();
     }

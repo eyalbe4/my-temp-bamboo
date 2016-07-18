@@ -5,7 +5,6 @@ import com.atlassian.bamboo.plan.Plan;
 import com.atlassian.bamboo.plan.cache.ImmutablePlan;
 import com.atlassian.bamboo.plan.configuration.MiscellaneousPlanConfigurationPlugin;
 import com.atlassian.bamboo.v2.build.BaseConfigurablePlugin;
-import com.atlassian.bamboo.v2.build.configuration.MiscellaneousBuildConfigurationPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

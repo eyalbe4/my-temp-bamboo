@@ -3,9 +3,7 @@ package org.jfrog.bamboo.configuration;
 import com.atlassian.bamboo.build.Job;
 import com.atlassian.bamboo.collections.ActionParametersMap;
 import com.atlassian.bamboo.configuration.AdministrationConfiguration;
-import com.atlassian.bamboo.configuration.AdministrationConfigurationImpl;
 import com.atlassian.bamboo.security.EncryptionService;
-import com.atlassian.bamboo.spring.ComponentAccessor;
 import com.atlassian.bamboo.task.*;
 import com.atlassian.bamboo.utils.error.ErrorCollection;
 import com.atlassian.bamboo.v2.build.agent.capability.Requirement;
@@ -57,24 +55,27 @@ public abstract class AbstractArtifactoryConfiguration extends AbstractTaskConfi
     private String builderContextPrefix;
     private String capabilityPrefix;
 
-    protected AbstractArtifactoryConfiguration(ServerConfigManager serverConfigManager) {
-        this(null, null, serverConfigManager);
+    protected AbstractArtifactoryConfiguration() {
+        this(null, null);
     }
 
-    protected AbstractArtifactoryConfiguration(String builderContextPrefix, ServerConfigManager serverConfigManager) {
-        this(builderContextPrefix, null, serverConfigManager);
+    protected AbstractArtifactoryConfiguration(String builderContextPrefix) {
+        this(builderContextPrefix, null);
     }
 
-    protected AbstractArtifactoryConfiguration(String builderContextPrefix, @Nullable String capabilityPrefix, ServerConfigManager serverConfigManager) {
+    protected AbstractArtifactoryConfiguration(String builderContextPrefix, @Nullable String capabilityPrefix) {
+        if (serverConfigManager == null) {
+            serverConfigManager = ServerConfigManager.getInstance();
+        }
+        if (administrationConfiguration == null) {
+            administrationConfiguration =
+                    (AdministrationConfiguration) ContainerManager.getComponent("administrationConfiguration");
+        }
+        if (serverConfigManager == null) {
+            serverConfigManager = ServerConfigManager.getInstance();
+        }
         this.builderContextPrefix = builderContextPrefix;
         this.capabilityPrefix = capabilityPrefix;
-        this.serverConfigManager = serverConfigManager;
-        if (this.administrationConfiguration == null) {
-            this.administrationConfiguration = new AdministrationConfigurationImpl(null);
-        }
-        if (taskConfiguratorHelper == null) {
-            setTaskConfiguratorHelper();
-        }
     }
 
     public String getTestDirectory(AbstractBuildContext buildContext) {
@@ -184,11 +185,6 @@ public abstract class AbstractArtifactoryConfiguration extends AbstractTaskConfi
         taskConfiguratorHelper.populateContextWithConfiguration(context, taskDefinition, fieldsToCopy);
         // Decrypt back the password fields.
         decryptFields(taskDefinition.getConfiguration());
-    }
-
-    private void setTaskConfiguratorHelper() {
-        this.taskConfiguratorHelper = (TaskConfiguratorHelper)
-                ContainerManager.getInstance().getContainerContext().getComponent("taskConfiguratorHelper");
     }
 
     // populate common objects into context

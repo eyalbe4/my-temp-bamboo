@@ -22,9 +22,9 @@ import java.util.Set;
 public class ArtifactoryGenericBuildConfiguration extends AbstractArtifactoryConfiguration {
     private static final Set<String> FIELDS_TO_COPY = GenericContext.getFieldsToCopy();
 
-    public ArtifactoryGenericBuildConfiguration(ServerConfigManager serverConfigManager) {
-        super(serverConfigManager);
-    }
+//    public ArtifactoryGenericBuildConfiguration(ServerConfigManager serverConfigManager) {
+//        super(serverConfigManager);
+//    }
 
     @Override
     public void populateContextForCreate(@NotNull Map<String, Object> context) {

@@ -25,9 +25,9 @@ public class ArtifactoryDeploymentConfiguration extends AbstractArtifactoryConfi
     public static final String PASSWORD = "password";
     public static final String USERNAME = "username";
 
-    public ArtifactoryDeploymentConfiguration(ServerConfigManager serverConfigManager) {
-        super(serverConfigManager);
-    }
+//    public ArtifactoryDeploymentConfiguration(ServerConfigManager serverConfigManager) {
+//        super(serverConfigManager);
+//    }
 
     private static Set<String> getFieldsToCopy() {
         return Sets.newHashSet(
@@ -102,7 +102,7 @@ public class ArtifactoryDeploymentConfiguration extends AbstractArtifactoryConfi
         return DEPLOYMENT_REPOSITORY;
     }
 
-//    @Override
+    @Override
     public boolean taskProducesTestResults(TaskDefinition taskDefinition) {
         return false;
     }

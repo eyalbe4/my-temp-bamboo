@@ -302,7 +302,7 @@ public class ArtifactoryMaven3Task extends ArtifactoryTaskType {
     /**
      * Extracts the Artifactory Maven 3 recorder and all the needed to dependencies
      *
-     * @return Path of recorder and dependency jar folder if extraction succeeded. Null if not
+     * @return Path of recorder and declpendency jar folder if extraction succeeded. Null if not
      */
     private String extractMaven3Dependencies(File rootDir, long artifactoryServerId, Maven3BuildContext mavenBuildContext)
             throws IOException {

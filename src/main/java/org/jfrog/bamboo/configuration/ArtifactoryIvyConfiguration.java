@@ -23,8 +23,8 @@ public class ArtifactoryIvyConfiguration extends AbstractArtifactoryConfiguratio
     protected static final String DEFAULT_TEST_REPORTS_XML = "**/test-reports/*.xml";
     private static final Set<String> FIELDS_TO_COPY = IvyBuildContext.getFieldsToCopy();
 
-    public ArtifactoryIvyConfiguration(ServerConfigManager serverConfigManager) {
-        super(IvyBuildContext.PREFIX, CapabilityDefaultsHelper.CAPABILITY_BUILDER_PREFIX + ".ivy", serverConfigManager);
+    public ArtifactoryIvyConfiguration() {
+        super(IvyBuildContext.PREFIX, CapabilityDefaultsHelper.CAPABILITY_BUILDER_PREFIX + ".ivy");
     }
 
     @Override

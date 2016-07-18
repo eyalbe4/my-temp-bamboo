@@ -316,4 +316,5 @@
     <component-import key="taskConfiguratorHelper" interface="com.atlassian.bamboo.task.TaskConfiguratorHelper"/>
     <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
 
+
 </atlassian-plugin>
